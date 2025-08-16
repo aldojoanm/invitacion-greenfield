@@ -20,7 +20,6 @@
   z-index: 1;
 }
 
-/* capa de atenuación encima del video */
 .wheel-page::before{
   content:"";
   position: fixed;
@@ -51,10 +50,8 @@
   position: relative;
   z-index: 1;
 
-  /* márgenes (desktop) */
   margin: var(--wheel-gap-top-desktop) auto var(--wheel-gap-bottom-desktop);
 
-  /* animación de entrada */
   opacity: 0;
   transform: translateY(14px) scale(.985);
   animation: introUp 720ms cubic-bezier(.22,.61,.36,1) .08s both;
@@ -82,17 +79,16 @@
   .wheel-container{ width: min(92vmin, 920px); }
 }
 
-/* ====== Mobile ====== */
+/* Mobile */
 @media (max-width: 640px){
   .wheel-page{
-    min-height: auto;      /* que mida lo que ocupa la rueda + márgenes */
+    min-height: auto;
     display: block;
     padding: 0;
   }
   .wheel-container{
     width: min(98vw, 560px);
     max-height: none;
-    /* márgenes (móvil) */
     margin: var(--wheel-gap-top-mobile) auto var(--wheel-gap-bottom-mobile);
   }
 }

@@ -29,9 +29,8 @@ const ReceptionLocation: React.FC = () => {
     <section className="agenda-section">
       <div className="agenda-wrap">
         <p className="agenda-intro" data-anim="fade-up" style={d(40)}>
-          Estimado agricultor, le invitamos a ser parte de una nueva
-          edición de Experience AgroPartners, diseñada para ofrecerle
-          soluciones eficientes y especializadas.
+          Te invitamos a ser parte de una nueva
+          edición de Experience AgroPartners, este 02 y 03 de Octubre.
         </p>
 
         <ul className="agenda-list">

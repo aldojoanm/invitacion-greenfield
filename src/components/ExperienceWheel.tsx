@@ -7,19 +7,22 @@ const CX = SIZE / 2;
 const CY = SIZE / 2;
 
 const TOP_RING = 350;
-const OUTER_EPS = 0.8; // recorte fino del slot vs. borde del disco superior
+const OUTER_EPS = 0.8;
 
 const ARM_COUNT = 6;
 const STEP = 360 / ARM_COUNT;
 
 const SEP_DEG = 3.0;
-const SEP_COLOR = "#0c1011";
+const SEP_COLOR = "#2d3136";
 
 const WINDOW_TOL = 0.2;
 const HOLE_SPAN = STEP - SEP_DEG - WINDOW_TOL;
 const HOLE_CENTER = 0;
 const HOLE_INNER_R = 110;
 const CORNER_PX = 0;
+
+// === NUEVO: ángulo inicial para centrar una franja completa en la abertura
+const START_ANGLE = HOLE_CENTER - STEP / 2;
 
 const SLOT_OFFSET_PX = 0;
 const SLOT_DEPTH_PX = 90;
@@ -60,6 +63,8 @@ const DOTS_OPACITY = 1;
 const DOTS_X_PAD = 0;
 
 const SLOT_BG_COLOR = "#3f4348";
+
+const DRAG_SENS = 2;
 
 type LineCfg = {
   text: string;
@@ -142,10 +147,10 @@ type ArmCfg = {
 
 const ARM_CONFIG: ArmCfg[] = [
   { color: "#93328e", textLines: ["Sanidad","superior para","mejores","resultados."], boldIndex:0, textFill:"#fff", textSize:18, textLineGap:20, logoSrc:"/logos/Manejocampeon.png", logoScale:2, logoRot:120, textLineDy:[5,0,0,0] },
-  { color: "#640a2a", textLines: ["Semillas de","calidad","productividad,","asegurada"], boldIndex:1, textFill:"#fff", textSize:18, textLineGap:20, logoSrc:"/logos/Conecta.png", logoScale:2, logoRot:60, textLineDy:[5,0,0,0] },
-  { color: "#406975", textLines: ["Aplicar con","precisión","producir con","visión"], boldIndex:1, textFill:"#fff", textSize:18, textLineGap:20, logoSrc:"/logos/Certero.png", logoScale:0.8, logoRot:0, textLineDy:[5,0,0,0] },
-  { color: "#058b5e", textLines: ["Soluciones","biológicas hacia","una agricultura","sostenible"], boldIndex:3, textFill:"#fff", textSize:18, textLineGap:20, logoSrc:"/logos/Origen.png", logoScale:2, logoRot:300, textLineDy:[5,0,0,0] },
-  { color: "#936a56", textLines: ["Nutrición","estratégica","para potenciar","el rendimiento"], boldIndex:0, textFill:"#fff", textSize:18, textLineGap:20, logoSrc:"/logos/Elemental.png", logoScale:1.7, logoRot:240, textLineDy:[5,0,0,0] },
+  { color: "#640a2a", textLines: ["Semillas de","calidad","productividad,","asegurada."], boldIndex:1, textFill:"#fff", textSize:18, textLineGap:20, logoSrc:"/logos/Conecta.png", logoScale:2, logoRot:60, textLineDy:[5,0,0,0] },
+  { color: "#406975", textLines: ["Aplicar con","precisión","producir con","visión."], boldIndex:1, textFill:"#fff", textSize:18, textLineGap:20, logoSrc:"/logos/Certero.png", logoScale:0.8, logoRot:0, textLineDy:[5,0,0,0] },
+  { color: "#058b5e", textLines: ["Soluciones","biológicas hacia","una agricultura","sostenible."], boldIndex:3, textFill:"#fff", textSize:18, textLineGap:20, logoSrc:"/logos/Origen.png", logoScale:2, logoRot:300, textLineDy:[5,0,0,0] },
+  { color: "#936a56", textLines: ["Nutrición","estratégica","para potenciar","el rendimiento."], boldIndex:0, textFill:"#fff", textSize:18, textLineGap:20, logoSrc:"/logos/Elemental.png", logoScale:1.7, logoRot:240, textLineDy:[5,0,0,0] },
   { color: "#706f6f", textLines: ["Manejo","completo y","eficiente para","cada cultivo."], boldIndex:0, textFill:"#fff", textSize:18, textLineGap:20, logoSrc:"/logos/Portecnico.png", logoScale:0.75, logoRot:180, textLineDy:[5,0,0,0] },
 ];
 
@@ -208,7 +213,8 @@ function pointerAngle(e: PointerEvent, svg: SVGSVGElement) {
 }
 
 export default function ExperienceWheel() {
-  const [angle, setAngle] = useState(0);
+  // usar START_ANGLE para que, al cargar, se vea una franja completa en la abertura
+  const [angle, setAngle] = useState(START_ANGLE);
   const ref = useRef<SVGSVGElement | null>(null);
   const dragging = useRef(false);
   const prevAngle = useRef(0);
@@ -224,7 +230,7 @@ export default function ExperienceWheel() {
     const onMove = (e: PointerEvent) => {
       if (!dragging.current) return;
       const a = pointerAngle(e, el);
-      setAngle((p) => p + (a - prevAngle.current));
+      setAngle((p) => p + (a - prevAngle.current) * DRAG_SENS);
       prevAngle.current = a;
     };
     const onUp = (e: PointerEvent) => {
@@ -314,8 +320,6 @@ export default function ExperienceWheel() {
               <stop offset="0%" stopColor="#4b4f55" />
               <stop offset="100%" stopColor="#3f4348" />
             </radialGradient>
-
-            {/* recorte suave del relleno de slot contra el borde del disco */}
             <mask id="outerClip">
               <rect x="0" y="0" width={SIZE} height={SIZE} fill="black" />
               <circle cx={CX} cy={CY} r={TOP_RING - OUTER_EPS} fill="white" />
@@ -370,13 +374,9 @@ export default function ExperienceWheel() {
                     </clipPath>
                   </defs>
 
-                  {/* brazo con hueco */}
                   <path d={wedgePath} fill={cfg.color} mask={`url(#${maskId})`} />
-
-                  {/* relleno del slot perfectamente cortado */}
                   <path d={slotPathMask} fill={SLOT_BG_COLOR} mask="url(#outerClip)" />
 
-                  {/* logo dentro del slot */}
                   <g clipPath={`url(#${clipId})`}>
                     <g transform={`translate(${imgCx}, ${imgCy}) rotate(${imgRot}) scale(${cfg.logoScale ?? 1})`}>
                       <image
@@ -391,7 +391,6 @@ export default function ExperienceWheel() {
                     </g>
                   </g>
 
-                  {/* textos del brazo */}
                   <g transform={`rotate(${mid + (cfg.textAngleOffset ?? 0)} ${CX} ${CY})`}>
                     <text
                       x={rTextX}
@@ -421,7 +420,6 @@ export default function ExperienceWheel() {
                     </text>
                   </g>
 
-                  {/* separador */}
                   <path
                     d={sectorPath(CX, CY, TOP_RING + 1, HOLE_INNER_R - 1, start - SEP_DEG / 2, start + SEP_DEG / 2, 0)}
                     fill={SEP_COLOR}
@@ -431,12 +429,31 @@ export default function ExperienceWheel() {
             })}
           </g>
 
-          {/* disco superior */}
+          {/* disco superior (base) */}
           <g className="top-visual" mask="url(#topMask)" shapeRendering="geometricPrecision">
             <circle cx={CX} cy={CY} r={TOP_RING} fill="url(#edgeFade)" />
             <circle cx={CX} cy={CY} r={TOP_RING} fill="none" stroke="#7a7f86" strokeWidth={1.5} opacity={0.7} />
             <circle cx={CX} cy={CY} r={TOP_RING - 24} fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth={1} strokeDasharray="4 6" />
           </g>
+
+          {/* === NUEVO: overlay de VIDEO solo sobre la rueda superior === */}
+          <foreignObject x="0" y="0" width={SIZE} height={SIZE} mask="url(#topMask)" style={{ pointerEvents: "none" }}>
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              src="/bg.mp4"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                opacity: 0.12,
+                filter: "grayscale(1) contrast(.9) brightness(.9)",
+              }}
+            />
+          </foreignObject>
 
           {/* franja */}
           <path className="stripe" d={stripeD} fill={STRIPE_FILL} mask="url(#stripeCut)" />
