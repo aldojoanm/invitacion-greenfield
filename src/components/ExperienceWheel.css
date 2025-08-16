@@ -1,0 +1,119 @@
+/* ExperienceWheel.css */
+:root{
+  --bg-video-opacity: 1;
+  --bg-video-filter: brightness(.62) contrast(.92) saturate(.78);
+  --bg-dim: .32;
+
+  /* márgenes de la rueda (ajusta a tu gusto) */
+  --wheel-gap-top-desktop: 24px;
+  --wheel-gap-bottom-desktop: 24px;
+  --wheel-gap-top-mobile: 5rem;
+  --wheel-gap-bottom-mobile: 4rem;
+}
+
+.wheel-page{
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+/* capa de atenuación encima del video */
+.wheel-page::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,var(--bg-dim));
+  z-index: 0;
+}
+
+.bg-video{
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--bg-video-opacity);
+  filter: var(--bg-video-filter);
+  animation: bgIn 600ms ease both;
+}
+
+.wheel-container{
+  width: min(96vmin, 860px);
+  max-height: 100svh;
+  aspect-ratio: 1 / 1;
+  user-select: none;
+  -webkit-user-drag: none;
+  position: relative;
+  z-index: 1;
+
+  /* márgenes (desktop) */
+  margin: var(--wheel-gap-top-desktop) auto var(--wheel-gap-bottom-desktop);
+
+  /* animación de entrada */
+  opacity: 0;
+  transform: translateY(14px) scale(.985);
+  animation: introUp 720ms cubic-bezier(.22,.61,.36,1) .08s both;
+}
+
+/* SVG hygiene */
+.wheel-svg{
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  cursor: grab;
+}
+.wheel-svg:active{ cursor: grabbing; }
+
+.wheel-svg text,
+.wheel-svg tspan{
+  text-shadow: none !important;
+  filter: none !important;
+  paint-order: normal;
+}
+
+/* Desktop widening */
+@media (min-width: 900px){
+  .wheel-container{ width: min(92vmin, 920px); }
+}
+
+/* ====== Mobile ====== */
+@media (max-width: 640px){
+  .wheel-page{
+    min-height: auto;      /* que mida lo que ocupa la rueda + márgenes */
+    display: block;
+    padding: 0;
+  }
+  .wheel-container{
+    width: min(98vw, 560px);
+    max-height: none;
+    /* márgenes (móvil) */
+    margin: var(--wheel-gap-top-mobile) auto var(--wheel-gap-bottom-mobile);
+  }
+}
+
+/* Animations */
+@keyframes introUp{ to{ opacity:1; transform: translateY(0) scale(1); } }
+@keyframes fadeUp{
+  from{ opacity:0; transform: translateY(8px); }
+  to  { opacity:1; transform: translateY(0); }
+}
+@keyframes bgIn{
+  from{ opacity:0; filter: brightness(.5) saturate(.7); }
+  to  { opacity:var(--bg-video-opacity); filter: var(--bg-video-filter); }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce){
+  .bg-video,
+  .wheel-container{
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

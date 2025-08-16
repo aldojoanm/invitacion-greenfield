@@ -1,0 +1,27 @@
+@font-face {
+  font-family: 'Nathalia';
+  src: url('/fonts/Nathalia.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Donatello';
+  src: url('/fonts/Donatello_W01_RegularLP.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Giovanni';
+  src: url('/fonts/ITC_Giovanni_Book_Regular.otf') format('opentype');
+}
+
+body {
+  
+  background-color: #000000;
+  font-family: Georgia, serif;
+}
+
+
+/* 🧱 Contenido por encima del video */
+.app-content-overlay {
+  position: relative;
+  z-index: 1;
+}

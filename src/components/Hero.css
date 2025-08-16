@@ -1,0 +1,81 @@
+:root{
+  --accent:#008655;      /* verde marca */
+  --text:#ffffff;
+
+  /* Encadre del video (ajustables) */
+  --video-x-desktop: 150%; /* >50% mueve a la derecha */
+  --video-y-desktop: 150%;
+  --video-x-mobile: 41%;
+  --video-y-mobile: 60%;  /* <50% sube el encuadre */
+}
+
+/* Lienzo fullscreen */
+.hero{
+  position:relative;
+  height:100svh;          /* quita el micro-scroll en móvil */
+  min-height:100vh;
+  background:#000;
+  overflow:hidden;
+  isolation:isolate;
+  padding:0;
+  display:block;          /* el botón va absoluto */
+}
+
+/* Video de fondo bien centrado y sin filtro */
+.hero-video-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position: var(--video-x-desktop) var(--video-y-desktop);
+  z-index:0;
+  pointer-events:none;
+  opacity:1;
+}
+
+/* Botón centrado y más abajo */
+.hero-btn{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:clamp(24px, 6vh, 64px);                 /* más abajo en pc */
+  z-index:1;
+
+  background:linear-gradient(180deg,#00a06a 0%,#008655 65%,#046a48 100%);
+  color:var(--text);
+  border:none;
+  padding:14px 32px;
+  border-radius:999px;
+  min-width:220px;
+  cursor:pointer;
+  font:700 16px/1 Inter, "SF Pro Text", "Segoe UI", Roboto,
+       "Helvetica Neue", Arial, "Noto Sans", system-ui, sans-serif;
+  letter-spacing:.3px;
+  box-shadow:0 10px 28px rgba(0,134,85,.24);
+  transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+.hero-btn:hover{ transform:translateX(-50%) translateY(-1px); box-shadow:0 12px 34px rgba(0,134,85,.30); }
+.hero-btn:active{ transform:translateX(-50%) translateY(0);    box-shadow:0 8px 20px rgba(0,134,85,.22); }
+
+/* ====== Responsive ====== */
+@media (max-width: 768px){
+  .hero{
+    height:100svh;
+    min-height:100svh;
+  }
+  .hero-video-bg{
+    object-position: var(--video-x-mobile) var(--video-y-mobile); /* un poco más arriba */
+  }
+  .hero-btn{
+    bottom:calc(24px + env(safe-area-inset-bottom)); /* salva-notch */
+    min-width:68vw;
+    padding:13px 28px;
+    font-size:15px;
+  }
+}
+
+/* Opcional: en ultra-panorámico mueve un pelín más a la derecha */
+@media (min-aspect-ratio: 16/9){
+  .hero-video-bg{ object-position: 56% var(--video-y-desktop); }
+}
