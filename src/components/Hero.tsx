@@ -19,7 +19,7 @@ export default function Hero({ onEnter }: HeroProps) {
       </video>
 
       <button type="button" className="hero-btn" onClick={onEnter}>
-        INGRESAR
+        INVITACIÓN
       </button>
     </section>
   );
