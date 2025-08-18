@@ -3,8 +3,8 @@
   --text:#ffffff;
 
   /* Encadre del video (ajustables) */
-  --video-x-desktop: 150%; /* >50% mueve a la derecha */
-  --video-y-desktop: 150%;
+  --video-x-desktop: 50%; /* >50% mueve a la derecha */
+  --video-y-desktop: 50%;
   --video-x-mobile: 41%;
   --video-y-mobile: 60%;  /* <50% sube el encuadre */
 }

@@ -66,6 +66,8 @@ const SLOT_BG_COLOR = "#3f4348";
 
 const DRAG_SENS = 2;
 
+const AUTO_ROTATE_DEG_PER_SEC = 4; // velocidad suave 
+
 type LineCfg = {
   text: string;
   bold?: boolean;
@@ -258,6 +260,22 @@ export default function ExperienceWheel() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  /** === NUEVO: auto-rotación suave (pausa mientras arrastras) */
+  useEffect(() => {
+    let raf = 0;
+    let last = performance.now();
+    const loop = (now: number) => {
+      const dt = (now - last) / 1000;
+      last = now;
+      if (!dragging.current) {
+        setAngle((a) => a + AUTO_ROTATE_DEG_PER_SEC * dt);
+      }
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
   const baseStart = HOLE_CENTER - HOLE_SPAN / 2;
   const baseEnd = HOLE_CENTER + HOLE_SPAN / 2;
 
@@ -324,6 +342,19 @@ export default function ExperienceWheel() {
               <rect x="0" y="0" width={SIZE} height={SIZE} fill="black" />
               <circle cx={CX} cy={CY} r={TOP_RING - OUTER_EPS} fill="white" />
             </mask>
+
+            {/* === NUEVO: punta de flecha minimalista */}
+            <marker
+              id="arrowHead"
+              viewBox="0 0 10 10"
+              refX="8"
+              refY="5"
+              markerWidth="8"
+              markerHeight="8"
+              orient="auto"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffffff" />
+            </marker>
           </defs>
 
           {/* disco inferior con brazos */}
