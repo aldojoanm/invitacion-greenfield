@@ -69,7 +69,7 @@ const ReceptionLocation: React.FC = () => {
 
         <div className="qr-box">
           <img  data-anim="pop"  style={d(60)} src="/logos/Qr.png" alt="Código QR" />
-          <span data-anim="fade-up" style={d(180)}>Escanéame</span>
+          <span data-anim="fade-up" style={d(180)}>Conoce más</span>
         </div>
       </div>
     </section>

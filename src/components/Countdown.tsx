@@ -134,7 +134,7 @@ export default function Countdown({
       <div className="xp-count-wrap" data-anim="fade-up">
         <img
           className="xp-logo"
-          src="/logos/Agropartnerts.png"
+          src="/logos/experience.png"
           alt="Agropartners"
           data-anim="scale-fade"
           data-parallax="26"
