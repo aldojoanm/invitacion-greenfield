@@ -82,10 +82,10 @@ const RIGHT_ICON_DX =  52;
  */
 const HINT_IMG_SRC    = "/logos/girar.png";
 const HINT_IMG_W      = 120;      // ancho del PNG
-const HINT_IMG_H      = 70;       // alto del PNG
-const HINT_IMG_RADIUS = TOP_RING + 38; // qué tan afuera del aro
-const HINT_IMG_ANGLE  = -36;      // ángulo alrededor del círculo (0=derecha, 90=abajo)
-const HINT_IMG_ROT    = -25;      
+const HINT_IMG_H      = 90;       // alto del PNG
+const HINT_IMG_RADIUS = TOP_RING + 20; // qué tan afuera del aro
+const HINT_IMG_ANGLE  = -32;      // ángulo alrededor del círculo (0=derecha, 90=abajo)
+const HINT_IMG_ROT    = -20;      
 const HINT_IMG_DX     = -30;        
 const HINT_IMG_DY     = 500;        
 
