@@ -68,7 +68,18 @@ const ReceptionLocation: React.FC = () => {
         </div>
 
         <div className="qr-box">
-          <img  data-anim="pop"  style={d(60)} src="/logos/Qr.png" alt="Código QR" />
+          {/* Botón que abre el link (no agranda el QR) */}
+          <a
+            href="https://bio.link/agropartners"
+            className="qr-btn"
+            aria-label="Abrir enlace de AgroPartners"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: "inline-block", textDecoration: "none", cursor: "pointer" }}
+          >
+            {/* mantenemos tu animación en el IMG */}
+            <img data-anim="pop" style={d(60)} src="/logos/Qr.png" alt="Código QR — abrir enlace" />
+          </a>
           <span data-anim="fade-up" style={d(180)}>Conoce más</span>
         </div>
       </div>
