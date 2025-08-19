@@ -145,9 +145,9 @@
 @media (max-width: 760px){
   :root{ --gap-units:36px; }
   .xp-count-section{ padding:6px 14px 100px; }
-  .xp-logo{ height:8rem; margin-bottom:6rem; }
+  .xp-logo{ height:6rem; margin-bottom:6rem; }
   .xp-countdown .unit{ min-width:auto; }
-  .xp-countdown .num{ font-size:56px; }
+  .xp-countdown .num{ font-size:50px; }
   .xp-countdown .lbl{ font-size:11px; }
   .xp-meta{ margin:44px 0 60px; gap:12px; }
   .pill{ font-size:13px; padding:7px 12px; }
