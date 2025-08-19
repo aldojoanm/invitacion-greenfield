@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./Location.css";
 
 const ReceptionLocation: React.FC = () => {
-  // Animaciones on-scroll
+  // ===== Animaciones on-scroll existentes =====
   useEffect(() => {
     const scope = document.querySelector(".agenda-section");
     if (!scope) return;
@@ -25,13 +25,50 @@ const ReceptionLocation: React.FC = () => {
   // helper para delay por elemento
   const d = (ms: number) => ({ ["--d" as any]: `${ms}ms` });
 
+  // ===== Flecha de "scroll" SOLO móvil =====
+  const [showHint, setShowHint] = useState(false);
+
+  // Mostrar solo en móviles (según el mismo breakpoint de tu CSS: 600px)
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 600px)");
+    const update = () => setShowHint(mq.matches); // visible al cargar si es móvil
+    update();
+    const onChange = (e: MediaQueryListEvent) => setShowHint(e.matches);
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
+  }, []);
+
+  // Ocultar al primer scroll/gesto
+  useEffect(() => {
+    if (!showHint) return;
+    const hide = () => setShowHint(false);
+    window.addEventListener("scroll", hide, { passive: true, once: true });
+    window.addEventListener("touchmove", hide, { passive: true, once: true });
+    window.addEventListener("wheel", hide, { passive: true, once: true });
+    return () => {
+      window.removeEventListener("scroll", hide);
+      window.removeEventListener("touchmove", hide);
+      window.removeEventListener("wheel", hide);
+    };
+  }, [showHint]);
+
   return (
     <section className="agenda-section">
       <div className="agenda-wrap">
         <p className="agenda-intro" data-anim="fade-up" style={d(40)}>
           Te invitamos a ser parte de una nueva
-          edición de Experience AgroPartners. 02 - 03 de Octubre.
+          edición de Experience AgroPartners.
         </p>
+
+        {/* Flecha indicativa SOLO móvil (debajo del texto) */}
+        {showHint && (
+          <img
+            className="scroll-hint"
+            src="/logos/flecha.png"
+            alt="Desliza hacia abajo"
+            aria-hidden="true"
+          />
+        )}
 
         <ul className="agenda-list">
           <li data-anim="fade-up" style={d(80)}>
@@ -68,7 +105,6 @@ const ReceptionLocation: React.FC = () => {
         </div>
 
         <div className="qr-box">
-          {/* Botón que abre el link (no agranda el QR) */}
           <a
             href="https://bio.link/agropartners"
             className="qr-btn"
@@ -77,7 +113,6 @@ const ReceptionLocation: React.FC = () => {
             rel="noopener noreferrer"
             style={{ display: "inline-block", textDecoration: "none", cursor: "pointer" }}
           >
-            {/* mantenemos tu animación en el IMG */}
             <img data-anim="pop" style={d(60)} src="/logos/Qr.png" alt="Código QR — abrir enlace" />
           </a>
           <span data-anim="fade-up" style={d(180)}>Conoce más</span>

@@ -21,7 +21,7 @@ const HOLE_CENTER = 0;
 const HOLE_INNER_R = 110;
 const CORNER_PX = 0;
 
-// === NUEVO: ángulo inicial para centrar una franja completa en la abertura
+// Ángulo inicial para centrar una franja completa en la abertura
 const START_ANGLE = HOLE_CENTER - STEP / 2;
 
 const SLOT_OFFSET_PX = 0;
@@ -65,8 +65,94 @@ const DOTS_X_PAD = 0;
 const SLOT_BG_COLOR = "#3f4348";
 
 const DRAG_SENS = 2;
+const AUTO_ROTATE_DEG_PER_SEC = 4; // velocidad suave
 
-const AUTO_ROTATE_DEG_PER_SEC = 4; // velocidad suave 
+// Iconos encabezado
+const LEFT_ICON_SRC  = "/logos/icono-calendario.png";
+const RIGHT_ICON_SRC = "/logos/icono-ubicacion.png";
+const ICON_W = 22;
+const ICON_H = 22;
+const LEFT_ICON_DY  = -68;
+const RIGHT_ICON_DY = -68;
+const LEFT_ICON_DX  = -39;
+const RIGHT_ICON_DX =  52;
+
+/** === NUEVO: pista “girar” con imagen ===
+ *  Ajusta aquí la posición/rotación y tamaño del PNG.
+ */
+const HINT_IMG_SRC    = "/logos/girar.png";
+const HINT_IMG_W      = 120;      // ancho del PNG
+const HINT_IMG_H      = 70;       // alto del PNG
+const HINT_IMG_RADIUS = TOP_RING + 38; // qué tan afuera del aro
+const HINT_IMG_ANGLE  = -36;      // ángulo alrededor del círculo (0=derecha, 90=abajo)
+const HINT_IMG_ROT    = -25;      
+const HINT_IMG_DX     = -30;        
+const HINT_IMG_DY     = 500;        
+
+// ---------------- helpers geom ----------------
+function sectorPath(
+  cx: number, cy: number, rOuter: number, rInner: number,
+  startDeg: number, endDeg: number, cornerPx: number = 0
+) {
+  const toRad = (d: number) => (d * Math.PI) / 180,
+    toDeg = (r: number) => (r * 180) / Math.PI;
+  const cornerDeg = cornerPx > 0 ? toDeg(cornerPx / rOuter) : 0;
+  const s0 = startDeg + cornerDeg,
+    e0 = endDeg - cornerDeg;
+  const largeArc = Math.abs(endDeg - startDeg) > 180 ? 1 : 0;
+  const p = (r: number, aDeg: number) => {
+    const a = toRad(aDeg);
+    return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+  };
+  const P1 = p(rOuter, s0),
+    P2 = p(rOuter, e0),
+    C_top = p(rOuter - cornerPx, e0 + cornerDeg),
+    C_bottom = p(rOuter - cornerPx, s0 - cornerDeg),
+    B_top = p(rInner, endDeg),
+    B_bottom = p(rInner, startDeg);
+  return [
+    `M ${P1.x} ${P1.y}`,
+    `A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${P2.x} ${P2.y}`,
+    cornerPx > 0
+      ? `Q ${C_top.x} ${C_top.y} ${B_top.x} ${B_top.y}`
+      : `L ${B_top.x} ${B_top.y}`,
+    `L ${B_bottom.x} ${B_bottom.y}`,
+    cornerPx > 0
+      ? `Q ${C_bottom.x} ${C_bottom.y} ${P1.x} ${P1.y}`
+      : `L ${P1.x} ${P1.y}`,
+    "Z",
+  ].join(" ");
+}
+function stripePath(x: number, y: number, w: number, h: number, r: number, deg: number) {
+  const rad = (d: number) => (d * Math.PI) / 180;
+  const tipRun = (h - r) / Math.tan(rad(deg));
+  const xR = x + w, yB = y + h;
+  return [
+    `M ${xR - r} ${y}`,
+    `A ${r} ${r} 0 0 1 ${xR} ${y + r}`,
+    `L ${xR} ${yB - r}`,
+    `A ${r} ${r} 0 0 1 ${xR - r} ${yB}`,
+    `L ${x - tipRun} ${yB}`,
+    `L ${x} ${y + r}`,
+    `A ${r} ${r} 0 0 1 ${x + r} ${y}`,
+    `L ${xR - r} ${y}`,
+    "Z",
+  ].join(" ");
+}
+function pointerAngle(e: PointerEvent, svg: SVGSVGElement) {
+  const r = svg.getBoundingClientRect(),
+    cx = r.left + r.width / 2,
+    cy = r.top + r.height / 2;
+  const x = e.clientX - cx,
+    y = e.clientY - cy;
+  return (Math.atan2(y, x) * 180) / Math.PI;
+}
+function polar(
+  cx: number, cy: number, radius: number, deg: number
+) {
+  const a = (deg * Math.PI) / 180;
+  return { x: cx + radius * Math.cos(a), y: cy + radius * Math.sin(a) };
+}
 
 type LineCfg = {
   text: string;
@@ -156,66 +242,7 @@ const ARM_CONFIG: ArmCfg[] = [
   { color: "#706f6f", textLines: ["Manejo","completo y","eficiente para","cada cultivo."], boldIndex:0, textFill:"#fff", textSize:18, textLineGap:20, logoSrc:"/logos/Portecnico.png", logoScale:0.75, logoRot:180, textLineDy:[5,0,0,0] },
 ];
 
-function sectorPath(
-  cx: number, cy: number, rOuter: number, rInner: number,
-  startDeg: number, endDeg: number, cornerPx: number = 0
-) {
-  const toRad = (d: number) => (d * Math.PI) / 180,
-    toDeg = (r: number) => (r * 180) / Math.PI;
-  const cornerDeg = cornerPx > 0 ? toDeg(cornerPx / rOuter) : 0;
-  const s0 = startDeg + cornerDeg,
-    e0 = endDeg - cornerDeg;
-  const largeArc = Math.abs(endDeg - startDeg) > 180 ? 1 : 0;
-  const p = (r: number, aDeg: number) => {
-    const a = toRad(aDeg);
-    return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
-  };
-  const P1 = p(rOuter, s0),
-    P2 = p(rOuter, e0),
-    C_top = p(rOuter - cornerPx, e0 + cornerDeg),
-    C_bottom = p(rOuter - cornerPx, s0 - cornerDeg),
-    B_top = p(rInner, endDeg),
-    B_bottom = p(rInner, startDeg);
-  return [
-    `M ${P1.x} ${P1.y}`,
-    `A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${P2.x} ${P2.y}`,
-    cornerPx > 0
-      ? `Q ${C_top.x} ${C_top.y} ${B_top.x} ${B_top.y}`
-      : `L ${B_top.x} ${B_top.y}`,
-    `L ${B_bottom.x} ${B_bottom.y}`,
-    cornerPx > 0
-      ? `Q ${C_bottom.x} ${C_bottom.y} ${P1.x} ${P1.y}`
-      : `L ${P1.x} ${P1.y}`,
-    "Z",
-  ].join(" ");
-}
-function stripePath(x: number, y: number, w: number, h: number, r: number, deg: number) {
-  const rad = (d: number) => (d * Math.PI) / 180;
-  const tipRun = (h - r) / Math.tan(rad(deg));
-  const xR = x + w, yB = y + h;
-  return [
-    `M ${xR - r} ${y}`,
-    `A ${r} ${r} 0 0 1 ${xR} ${y + r}`,
-    `L ${xR} ${yB - r}`,
-    `A ${r} ${r} 0 0 1 ${xR - r} ${yB}`,
-    `L ${x - tipRun} ${yB}`,
-    `L ${x} ${y + r}`,
-    `A ${r} ${r} 0 0 1 ${x + r} ${y}`,
-    `L ${xR - r} ${y}`,
-    "Z",
-  ].join(" ");
-}
-function pointerAngle(e: PointerEvent, svg: SVGSVGElement) {
-  const r = svg.getBoundingClientRect(),
-    cx = r.left + r.width / 2,
-    cy = r.top + r.height / 2;
-  const x = e.clientX - cx,
-    y = e.clientY - cy;
-  return (Math.atan2(y, x) * 180) / Math.PI;
-}
-
 export default function ExperienceWheel() {
-  // usar START_ANGLE para que, al cargar, se vea una franja completa en la abertura
   const [angle, setAngle] = useState(START_ANGLE);
   const ref = useRef<SVGSVGElement | null>(null);
   const dragging = useRef(false);
@@ -260,7 +287,7 @@ export default function ExperienceWheel() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  /** === NUEVO: auto-rotación suave (pausa mientras arrastras) */
+  // auto-rotación suave (pausa al arrastrar)
   useEffect(() => {
     let raf = 0;
     let last = performance.now();
@@ -315,6 +342,9 @@ export default function ExperienceWheel() {
       ? dividerX - (STRIPE_TXT.left.rightPad ?? 16)
       : leftSafeX;
 
+  // Posición del PNG “girar”
+  const hintPos = polar(CX, CY, HINT_IMG_RADIUS, HINT_IMG_ANGLE);
+
   return (
     <div className="wheel-page">
       <video className="bg-video" autoPlay loop muted playsInline preload="auto" aria-hidden>
@@ -342,19 +372,6 @@ export default function ExperienceWheel() {
               <rect x="0" y="0" width={SIZE} height={SIZE} fill="black" />
               <circle cx={CX} cy={CY} r={TOP_RING - OUTER_EPS} fill="white" />
             </mask>
-
-            {/* === NUEVO: punta de flecha minimalista */}
-            <marker
-              id="arrowHead"
-              viewBox="0 0 10 10"
-              refX="8"
-              refY="5"
-              markerWidth="8"
-              markerHeight="8"
-              orient="auto"
-            >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffffff" />
-            </marker>
           </defs>
 
           {/* disco inferior con brazos */}
@@ -467,7 +484,7 @@ export default function ExperienceWheel() {
             <circle cx={CX} cy={CY} r={TOP_RING - 24} fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth={1} strokeDasharray="4 6" />
           </g>
 
-          {/* === NUEVO: overlay de VIDEO solo sobre la rueda superior === */}
+          {/* overlay de VIDEO solo sobre la rueda superior */}
           <foreignObject x="0" y="0" width={SIZE} height={SIZE} mask="url(#topMask)" style={{ pointerEvents: "none" }}>
             <video
               autoPlay
@@ -510,14 +527,35 @@ export default function ExperienceWheel() {
             );
           })()}
 
-          {/* textos de franja */}
+          {/* textos de franja + ICONOS encabezado */}
           <g mask="url(#stripeCut)" style={{ pointerEvents: "none" }}>
             <line
               x1={dividerX} y1={stripeY + 16}
               x2={dividerX} y2={stripeY + STRIPE_H - 16}
               stroke={STRIPE_TXT.accent} strokeWidth={3} strokeLinecap="round" opacity={0.95}
             />
+
             <g transform={`translate(0, ${STRIPE_CONTENT_OFFSET_Y})`}>
+              {/* Icono Calendario (izq) */}
+              <image
+                href={LEFT_ICON_SRC}
+                x={leftBaseX - ICON_W / 2 + LEFT_ICON_DX}
+                y={CY + LEFT_ICON_DY}
+                width={ICON_W}
+                height={ICON_H}
+                preserveAspectRatio="xMidYMid meet"
+              />
+              {/* Icono Ubicación (der) */}
+              <image
+                href={RIGHT_ICON_SRC}
+                x={rightStartX - ICON_W / 2 + RIGHT_ICON_DX}
+                y={CY + RIGHT_ICON_DY}
+                width={ICON_W}
+                height={ICON_H}
+                preserveAspectRatio="xMidYMid meet"
+              />
+
+              {/* Texto izquierda */}
               <text
                 x={leftBaseX}
                 y={CY}
@@ -548,6 +586,7 @@ export default function ExperienceWheel() {
                 ))}
               </text>
 
+              {/* Texto derecha */}
               <text
                 x={rightStartX}
                 y={CY}
@@ -581,8 +620,36 @@ export default function ExperienceWheel() {
           </g>
 
           {/* logos fijos */}
-          <image className="logo-top" href={TOP_LOGO_SRC} x={CX - TOP_LOGO_W / 2} y={CY - TOP_RING + TOP_LOGO_PAD} width={TOP_LOGO_W} height={TOP_LOGO_H} preserveAspectRatio="xMidYMid meet" style={{ pointerEvents: "none" }} />
-          <image className="logo-bottom" href={BOTTOM_LOGO_SRC} x={CX - BOTTOM_LOGO_W / 2} y={CY + TOP_RING - BOTTOM_LOGO_PAD - BOTTOM_LOGO_H} width={BOTTOM_LOGO_W} height={BOTTOM_LOGO_H} preserveAspectRatio="xMidYMid meet" style={{ pointerEvents: "none" }} />
+          <image className="logo-top" href={TOP_LOGO_SRC}
+            x={CX - TOP_LOGO_W / 2}
+            y={CY - TOP_RING + TOP_LOGO_PAD}
+            width={TOP_LOGO_W}
+            height={TOP_LOGO_H}
+            preserveAspectRatio="xMidYMid meet"
+            style={{ pointerEvents: "none" }}
+          />
+          <image className="logo-bottom" href={BOTTOM_LOGO_SRC}
+            x={CX - BOTTOM_LOGO_W / 2}
+            y={CY + TOP_RING - BOTTOM_LOGO_PAD - BOTTOM_LOGO_H}
+            width={BOTTOM_LOGO_W}
+            height={BOTTOM_LOGO_H}
+            preserveAspectRatio="xMidYMid meet"
+            style={{ pointerEvents: "none" }}
+          />
+
+          {/* === NUEVO: imagen “girar” con fade lento === */}
+          <g style={{ pointerEvents: "none" }}
+             transform={`translate(${hintPos.x + HINT_IMG_DX}, ${hintPos.y + HINT_IMG_DY}) rotate(${HINT_IMG_ROT})`}>
+            <image
+              className="hint-fade"
+              href={HINT_IMG_SRC}
+              x={-HINT_IMG_W / 2}
+              y={-HINT_IMG_H / 2}
+              width={HINT_IMG_W}
+              height={HINT_IMG_H}
+              preserveAspectRatio="xMidYMid meet"
+            />
+          </g>
         </svg>
       </div>
     </div>

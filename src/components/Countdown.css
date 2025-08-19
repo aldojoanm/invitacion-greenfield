@@ -164,3 +164,59 @@
     filter: none !important;
   }
 }
+
+/* Botón de ubicación */
+.xp-cta-map{
+  display: inline-block;
+  margin: 12px auto 0;
+  transform: translateY(var(--parY, 0px));
+}
+.xp-cta-map img{
+  width: 44px;  
+  height: auto;
+  display: block;
+  opacity: .96;
+  transition: transform .18s ease, opacity .18s ease, filter .18s ease;
+  filter: drop-shadow(0 10px 24px rgba(0,0,0,.24));
+}
+.xp-cta-map:hover img{ opacity:1; transform: translateY(-1px); }
+.xp-cta-map:active img{ transform: translateY(0); }
+
+@media (max-width: 760px){
+  .xp-cta-map img{ width: 40px; }
+}
+
+/* Contenedor en columna para apilar los dos CTAs */
+.xp-cta-col{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;               /* separación entre botón e ícono */
+}
+
+.xp-cta{
+  display:block;
+  margin:0 auto;
+}
+
+.xp-cta-map{
+  display:block;
+  line-height:0;         
+  margin:8 auto;
+  transform: translateY(var(--parY, 0px));
+}
+.xp-cta-map img{
+  width:3rem;
+  height:auto;
+  display:block;
+  margin:0 auto;
+  opacity:.96;
+  transition: transform .18s ease, opacity .18s ease, filter .18s ease;
+  filter: drop-shadow(0 10px 24px rgba(0,0,0,.24));
+}
+.xp-cta-map:hover img{ opacity:1; transform: translateY(-1px); }
+.xp-cta-map:active img{ transform: translateY(0); }
+
+@media (max-width:760px){
+  .xp-cta-map img{ width:40px; }
+}

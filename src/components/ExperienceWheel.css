@@ -74,6 +74,17 @@
   paint-order: normal;
 }
 
+/* Fade lento para el PNG de “girar” */
+.hint-fade{
+  opacity: 0;
+  animation: hintPulse 4s ease-in-out infinite;
+}
+
+@keyframes hintPulse{
+  0%, 100% { opacity: 0; }
+  50%      { opacity: 0.9; }
+}
+
 /* Desktop widening */
 @media (min-width: 900px){
   .wheel-container{ width: min(92vmin, 920px); }

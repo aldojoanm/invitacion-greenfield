@@ -186,16 +186,32 @@ export default function Countdown({
           <span className="pill">08:00 Hrs</span>
         </div>
 
-        <button
-          className="xp-cta"
-          onClick={handleAddToCalendar}
-          data-anim="pop"
-          data-parallax="-6"
-          style={{ ["--d" as any]: "220ms" }}
-          aria-label="Agregar Experience AgroPartners al calendario (02/oct/2025 08:00)"
-        >
-          Agendar el evento
-        </button>
+          {/* CTA calendario + ubicación */}
+          <div className="xp-cta-col">
+            <button
+              className="xp-cta"
+              onClick={handleAddToCalendar}
+              data-anim="pop"
+              data-parallax="-6"
+              style={{ ["--d" as any]: "220ms" }}
+              aria-label="Agregar Experience AgroPartners al calendario (02/oct/2025 08:00)"
+            >
+              Agendar el evento
+            </button>
+
+            <a
+              className="xp-cta-map"
+              href="https://goo.gl/maps/vbqjabdURShWJ5u87?g_st=ac"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-anim="pop"
+              data-parallax="-6"
+              style={{ ["--d" as any]: "260ms" }}
+              aria-label="Abrir ubicación en Google Maps"
+            >
+              <img src="/logos/icono-ubicacion.png" alt="Ubicación" />
+            </a>
+          </div>
       </div>
     </section>
   );

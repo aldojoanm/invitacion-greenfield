@@ -191,3 +191,27 @@
   .qr-box{ margin-top: 8px; }
   .qr-box img{ width:190px; height:190px; max-width: 85vw; }
 }
+
+/* ===== Flecha indicativa de scroll (solo móvil) ===== */
+.scroll-hint{
+  display:none;                 /* oculta en desktop */
+}
+
+@media (max-width: 600px){
+  .scroll-hint{
+    display:block;
+    width: 1rem;                /* ajusta tamaño si quieres */
+    height: 3rem;
+    margin: -1.5rem auto 18px;     /* justo debajo del párrafo, centrado */
+    opacity: 0;
+    animation: scrollHintPulse 2.8s ease-in-out infinite;
+    pointer-events: none;       /* no interfiere con taps */
+    user-select: none;
+  }
+}
+
+@keyframes scrollHintPulse{
+  0%   { opacity: 0; transform: translateY(0); }
+  50%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(6px); }
+}
