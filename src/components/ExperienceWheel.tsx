@@ -43,7 +43,7 @@ const TOP_LOGO_PAD = 18;
 
 const BOTTOM_LOGO_SRC = "/logos/Agropartnerts.png";
 const BOTTOM_LOGO_W = 150;
-const BOTTOM_LOGO_H = 300;
+const BOTTOM_LOGO_H = 280;
 const BOTTOM_LOGO_PAD = 18;
 
 const STRIPE_FILL = "#2d3136";
@@ -72,8 +72,8 @@ const LEFT_ICON_SRC  = "/logos/icono-calendario.png";
 const RIGHT_ICON_SRC = "/logos/icono-ubicacion.png";
 const ICON_W = 22;
 const ICON_H = 22;
-const LEFT_ICON_DY  = -68;
-const RIGHT_ICON_DY = -68;
+const LEFT_ICON_DY  = -65;
+const RIGHT_ICON_DY = -65;
 const LEFT_ICON_DX  = -39;
 const RIGHT_ICON_DX =  52;
 
@@ -195,7 +195,7 @@ const STRIPE_TXT: StripeTxtCfg = {
     rightPad: 18,
     xPad: 12,
     gap: 20,
-    startOffset: -15,
+    startOffset: -10,
     lines: [
       { text: "02 - 03", bold: true, size: 22, ls: 1 },
       { text: "Octubre", bold: true, size: 24, dy: 2, ls: 0.5 },
@@ -204,7 +204,7 @@ const STRIPE_TXT: StripeTxtCfg = {
   },
   right: {
     gap: 25,
-    startOffset: -24,
+    startOffset: -10,
     lines: [
       { text: "Propiedad", size: 23, ls: 1 },
       { text: "El Porvenir", bold: true, size: 20, ls: 1 },

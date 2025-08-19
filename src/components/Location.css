@@ -201,7 +201,7 @@
   .scroll-hint{
     display:block;
     width: 1.5rem;                /* ajusta tamaño si quieres */
-    height: 4rem;
+    height: 3.5rem;
     margin: -1.5rem auto 18px;     /* justo debajo del párrafo, centrado */
     opacity: 0;
     animation: scrollHintPulse 2.8s ease-in-out infinite;

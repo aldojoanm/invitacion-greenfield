@@ -4,8 +4,8 @@
   --muted:#cfd3d8;
   --accent:#008655;
 
-  --gap-units:110px;         /* separación entre bloques del contador */
-  --dur: 720ms;              /* duración base de animaciones */
+  --gap-units:110px;
+  --dur: 720ms;
   --ease: cubic-bezier(.22,.61,.36,1);
 }
 
@@ -21,7 +21,6 @@
 }
 .xp-count-section *{ text-shadow:none !important; }
 
-/* ===== layout ===== */
 .xp-count-wrap{
   max-width:1100px;
   margin:0 auto;
@@ -36,8 +35,6 @@
   object-fit:contain;
   margin:0 auto 120px;
   display:block;
-
-  /* parallax y reveal se combinan via var */
   transform: translateY(var(--parY, 0px));
 }
 
@@ -61,11 +58,8 @@
   font-size:104px;
   line-height:1;
   letter-spacing:.01em;
-  color:#fff;
-  /* leve brillo animado */
   background: linear-gradient(180deg, #ffffff, #dfe5ea);
-  -webkit-background-clip: text;
-          background-clip: text;
+  -webkit-background-clip: text; background-clip: text;
   color: transparent;
 }
 
@@ -96,7 +90,16 @@
 .pill--date{ margin:0 !important; }
 .xp-meta .dot{ width:6px; height:6px; border-radius:50%; background:var(--accent); display:inline-block; }
 
-/* CTA */
+/* ===== CTA calendario + ubicación apilados ===== */
+.xp-cta-col{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+  margin-top:-12px;   /* sube el bloque de CTAs */
+}
+
+/* Botón calendario */
 .xp-cta{
   appearance:none; border:none; cursor:pointer;
   background:#0a6f52;
@@ -106,34 +109,62 @@
   opacity:.96;
   transform: translateY(var(--parY, 0px));
   box-shadow: 0 10px 28px rgba(0,134,85,.24);
+  display:block;
+  margin:0 auto;
 }
 .xp-cta:hover{ background:#0a6048; transform: translateY(calc(var(--parY,0px) - 1px)); opacity:1; }
 .xp-cta:active{ transform: translateY(var(--parY,0px)); }
 
-/* ===== Animaciones de entrada (reveal + stagger) ===== */
-[data-anim]{
-  --d: 0ms;                /* delay configurable por inline style */
-  opacity:0;
-  transform: translateY(calc(var(--parY,0px) + 14px)) scale(1);
-  filter: blur(2px);
-  transition:
-    transform var(--dur) var(--ease),
-    opacity   var(--dur) var(--ease),
-    filter    var(--dur) var(--ease);
-  transition-delay: var(--d);
-  will-change: transform, opacity, filter;
+/* Contenedor mapa (ícono clickeable + etiqueta informativa) */
+.xp-cta-map{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  line-height:1;
+  margin:0 auto;
+  transform: translateY(var(--parY, 0px));
 }
-[data-anim].in{
+
+/* Solo el ícono es link */
+.xp-cta-map__link{
+  display:block;
+  line-height:0;
+  text-decoration:none;
+}
+
+/* Ícono con fade continuo */
+.xp-cta-map__link img{
+  width:44px;
+  height:auto;
+  display:block;
+  margin:0 auto 6px;
+  opacity:.9;
+  filter: drop-shadow(0 10px 24px rgba(0,0,0,.24));
+  animation: xpFade 2.6s ease-in-out infinite;
+}
+.xp-cta-map__link:hover img{
   opacity:1;
-  transform: translateY(var(--parY,0px)) scale(1);
-  filter: blur(0);
+  animation-play-state: paused;
 }
+
+/* Etiqueta NO clickeable, misma tipografía */
+.xp-cta-map-label{
+  font-family:"Inter Tight", Inter, system-ui, sans-serif;
+  font-size:13px;
+  color:var(--muted);
+  letter-spacing:.02em;
+  user-select:none;
+}
+
+/* ===== Animaciones de entrada ===== */
+[data-anim]{ --d:0ms; opacity:0; transform: translateY(calc(var(--parY,0px) + 14px)) scale(1); filter: blur(2px);
+  transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease), filter var(--dur) var(--ease);
+  transition-delay: var(--d); will-change: transform, opacity, filter; }
+[data-anim].in{ opacity:1; transform: translateY(var(--parY,0px)) scale(1); filter: blur(0); }
 [data-anim="scale-fade"]{ transform: translateY(calc(var(--parY,0px) + 12px)) scale(.96); }
 [data-anim="scale-fade"].in{ transform: translateY(var(--parY,0px)) scale(1); }
-
 [data-anim="pop"]{ transform: translateY(calc(var(--parY,0px) + 12px)) scale(.92); }
 [data-anim="pop"].in{ transform: translateY(var(--parY,0px)) scale(1); }
-
 [data-anim="fade-up"]{ transform: translateY(calc(var(--parY,0px) + 18px)); }
 
 /* ===== Responsive ===== */
@@ -152,71 +183,19 @@
   .xp-meta{ margin:44px 0 60px; gap:12px; }
   .pill{ font-size:13px; padding:7px 12px; }
   .xp-cta{ padding:12px 24px; font-size:15px; }
+  .xp-cta-map__link img{ width:40px; }
 }
 
-/* Respeto reduce-motion */
+/* Reduce motion */
 @media (prefers-reduced-motion: reduce){
   [data-anim],
-  [data-anim].in{
-    transition: none !important;
-    transform: translateY(var(--parY,0px)) !important;
-    opacity: 1 !important;
-    filter: none !important;
-  }
+  [data-anim].in{ transition:none !important; transform: translateY(var(--parY,0px)) !important; opacity:1 !important; filter:none !important; }
+  .xp-cta-map__link img{ animation:none !important; }
 }
 
-/* Botón de ubicación */
-.xp-cta-map{
-  display: inline-block;
-  margin: 12px auto 0;
-  transform: translateY(var(--parY, 0px));
-}
-.xp-cta-map img{
-  width: 44px;  
-  height: auto;
-  display: block;
-  opacity: .96;
-  transition: transform .18s ease, opacity .18s ease, filter .18s ease;
-  filter: drop-shadow(0 10px 24px rgba(0,0,0,.24));
-}
-.xp-cta-map:hover img{ opacity:1; transform: translateY(-1px); }
-.xp-cta-map:active img{ transform: translateY(0); }
-
-@media (max-width: 760px){
-  .xp-cta-map img{ width: 40px; }
-}
-
-/* Contenedor en columna para apilar los dos CTAs */
-.xp-cta-col{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:12px;               /* separación entre botón e ícono */
-}
-
-.xp-cta{
-  display:block;
-  margin:0 auto;
-}
-
-.xp-cta-map{
-  display:block;
-  line-height:0;         
-  margin:8 auto;
-  transform: translateY(var(--parY, 0px));
-}
-.xp-cta-map img{
-  width:3rem;
-  height:auto;
-  display:block;
-  margin:0 auto;
-  opacity:.96;
-  transition: transform .18s ease, opacity .18s ease, filter .18s ease;
-  filter: drop-shadow(0 10px 24px rgba(0,0,0,.24));
-}
-.xp-cta-map:hover img{ opacity:1; transform: translateY(-1px); }
-.xp-cta-map:active img{ transform: translateY(0); }
-
-@media (max-width:760px){
-  .xp-cta-map img{ width:40px; }
+/* Fade del ícono de ubicación */
+@keyframes xpFade{
+  0%   { opacity:.15; transform: translateY(0); }
+  50%  { opacity:1; }
+  100% { opacity:.15; transform: translateY(2px); }
 }

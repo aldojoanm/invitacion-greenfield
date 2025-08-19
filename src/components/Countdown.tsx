@@ -2,8 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "./Countdown.css";
 
 type CountdownProps = {
-  /** Ej.: "2025-10-02T08:00:00" (hora local) */
-  targetDate?: string;
+  targetDate?: string; // Ej.: "2025-10-02T08:00:00"
 };
 
 export default function Countdown({
@@ -13,7 +12,6 @@ export default function Countdown({
 
   // ====== lógica del contador ======
   const startDate = useMemo(() => new Date(targetDate), [targetDate]);
-
   const calc = () => {
     const d = +startDate - Date.now();
     if (d <= 0) return null;
@@ -24,7 +22,6 @@ export default function Countdown({
       seconds: Math.floor((d % 60000) / 1000),
     };
   };
-
   const [left, setLeft] = useState(calc());
   useEffect(() => {
     const id = setInterval(() => setLeft(calc()), 1000);
@@ -35,7 +32,6 @@ export default function Countdown({
   const outerRef = useRef<HTMLDivElement | null>(null);
   const innerRef = useRef<HTMLDivElement | null>(null);
   const [scale, setScale] = useState(1);
-
   useEffect(() => {
     const fit = () => {
       const outer = outerRef.current;
@@ -47,7 +43,6 @@ export default function Countdown({
       setScale(Number.isFinite(s) ? s : 1);
     };
     fit();
-
     const RO: typeof ResizeObserver | undefined = (window as any).ResizeObserver;
     const ro = RO ? new RO(fit) : null;
     if (ro && outerRef.current) ro.observe(outerRef.current);
@@ -61,23 +56,19 @@ export default function Countdown({
 
   // ====== Google Calendar (forzado a 02/oct/2025 08:00) ======
   const handleAddToCalendar = () => {
-    // Mes en JS es base 0 → 9 = Octubre
     const start = new Date(2025, 9, 2, 8, 0, 0);
     const end = new Date(start.getTime() + 4 * 60 * 60 * 1000);
-
     const z = (t: Date) =>
       new Date(t.getTime() - t.getTimezoneOffset() * 60000)
         .toISOString()
         .replace(/[-:]/g, "")
         .replace(/\.\d{3}Z$/, "Z");
-
     const url =
       `https://calendar.google.com/calendar/render?action=TEMPLATE` +
       `&text=${encodeURIComponent("Experience AgroPartners")}` +
       `&dates=${z(start)}/${z(end)}` +
       `&details=${encodeURIComponent("Jornada técnica de Experience AgroPartners.")}` +
       `&location=${encodeURIComponent("San Pedro, Km 27 — La Planchada")}`;
-
     window.open(url, "_blank");
   };
 
@@ -86,7 +77,6 @@ export default function Countdown({
     const root = sectionRef.current;
     if (!root) return;
 
-    // reveal on view (una vez)
     const revealEls = Array.from(
       root.querySelectorAll<HTMLElement>("[data-anim]")
     );
@@ -96,7 +86,7 @@ export default function Countdown({
           const el = en.target as HTMLElement;
           if (en.isIntersecting) {
             el.classList.add("in");
-            io.unobserve(el); // dispara una sola vez
+            io.unobserve(el);
           }
         });
       },
@@ -104,18 +94,16 @@ export default function Countdown({
     );
     revealEls.forEach((el) => io.observe(el));
 
-    // parallax suave mientras se hace scroll
     const parEls = Array.from(
       root.querySelectorAll<HTMLElement>("[data-parallax]")
     );
     const onScroll = () => {
       const r = root.getBoundingClientRect();
       const vh = window.innerHeight || document.documentElement.clientHeight;
-      // progreso de 0 (arriba fuera) a 1 (abajo fuera)
       const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
       parEls.forEach((el) => {
-        const k = parseFloat(el.dataset.parallax || "0"); // fuerza
-        const y = (p - 0.5) * k; // px
+        const k = parseFloat(el.dataset.parallax || "0");
+        const y = (p - 0.5) * k;
         el.style.setProperty("--parY", `${y}px`);
       });
     };
@@ -186,32 +174,33 @@ export default function Countdown({
           <span className="pill">08:00 Hrs</span>
         </div>
 
-          {/* CTA calendario + ubicación */}
-          <div className="xp-cta-col">
-            <button
-              className="xp-cta"
-              onClick={handleAddToCalendar}
-              data-anim="pop"
-              data-parallax="-6"
-              style={{ ["--d" as any]: "220ms" }}
-              aria-label="Agregar Experience AgroPartners al calendario (02/oct/2025 08:00)"
-            >
-              Agendar el evento
-            </button>
+        {/* CTA calendario + ubicación */}
+        <div className="xp-cta-col">
+          <button
+            className="xp-cta"
+            onClick={handleAddToCalendar}
+            data-anim="pop"
+            data-parallax="-6"
+            style={{ ["--d" as any]: "220ms" }}
+            aria-label="Agregar Experience AgroPartners al calendario (02/oct/2025 08:00)"
+          >
+            Agendar el evento
+          </button>
 
+          {/* Ícono clickeable y etiqueta NO clickeable */}
+          <div className="xp-cta-map" data-anim="pop" data-parallax="-6" style={{ ["--d" as any]: "260ms" }}>
             <a
-              className="xp-cta-map"
+              className="xp-cta-map__link"
               href="https://goo.gl/maps/vbqjabdURShWJ5u87?g_st=ac"
               target="_blank"
               rel="noopener noreferrer"
-              data-anim="pop"
-              data-parallax="-6"
-              style={{ ["--d" as any]: "260ms" }}
               aria-label="Abrir ubicación en Google Maps"
             >
               <img src="/logos/icono-ubicacion.png" alt="Ubicación" />
             </a>
+            <span className="xp-cta-map-label">Ubicación</span>
           </div>
+        </div>
       </div>
     </section>
   );
