@@ -61,7 +61,7 @@ html, body { margin:0; padding:0; max-width:100%; overflow-x:hidden; }
 
 .xp-count-section{
   position:relative;
-  min-height: 56svh;
+  min-height: 75svh;
   color:var(--text);
   padding-top: clamp(28px, 10vh, 100px);
   padding-bottom: clamp(22px, 8vh, 48px);
