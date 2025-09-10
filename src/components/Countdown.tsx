@@ -2,17 +2,17 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "./Countdown.css";
 
 type CountdownProps = {
-  targetDate?: string; // Ej.: "2025-10-02T08:00:00-04:00"
+  // Ej.: "2025-10-24T19:00:00-04:00"
+  targetDate?: string;
 };
 
 type Left = { days: number; hours: number; minutes: number; seconds: number };
 
 export default function Countdown({
-  targetDate = "2025-10-02T08:00:00-04:00",
+  targetDate = "2025-10-24T19:00:00-04:00",
 }: CountdownProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
 
-  // ====== lógica del contador ======
   const startDate = useMemo(() => new Date(targetDate), [targetDate]);
 
   const calc = (): Left | null => {
@@ -32,7 +32,6 @@ export default function Countdown({
     return () => clearInterval(id);
   }, [targetDate]);
 
-  // ====== Auto-fit del contador (para que nunca se corte en móvil) ======
   const outerRef = useRef<HTMLDivElement | null>(null);
   const innerRef = useRef<HTMLDivElement | null>(null);
   const [scale, setScale] = useState(1);
@@ -54,44 +53,37 @@ export default function Countdown({
     return () => { ro?.disconnect?.(); window.removeEventListener("resize", fit); };
   }, []);
 
-  // ====== Google Calendar ======
+  // Google Calendar: usa el instante exacto en UTC (no re-aplica offset del dispositivo)
   const handleAddToCalendar = () => {
     const start = new Date(startDate);
     const end = new Date(start.getTime() + 4 * 60 * 60 * 1000);
-    const z = (t: Date) =>
-      new Date(t.getTime() - t.getTimezoneOffset() * 60000)
-        .toISOString()
-        .replace(/[-:]/g, "")
-        .replace(/\.\d{3}Z$/, "Z");
+    const toICS = (d: Date) =>
+      d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
     const url =
       `https://calendar.google.com/calendar/render?action=TEMPLATE` +
       `&text=${encodeURIComponent("Fisiología de Plantas · Prof. Chavarría")}` +
-      `&dates=${z(start)}/${z(end)}` +
+      `&dates=${toICS(start)}/${toICS(end)}` +
       `&details=${encodeURIComponent("Sesión técnica aplicada para mejorar rendimiento, manejo del estrés y eficiencia hídrica.")}` +
       `&location=${encodeURIComponent("Hotel Los Tajibos — Santa Cruz de la Sierra")}`;
     window.open(url, "_blank");
   };
 
-  // ====== Animaciones scroll (reveal IN/OUT + parallax suave) ======
   useEffect(() => {
     const root = sectionRef.current;
     if (!root) return;
 
-    // --- Reveal bidireccional ---
     const revealEls = Array.from(root.querySelectorAll<HTMLElement>("[data-anim]"));
     const io = new IntersectionObserver(
-      (entries) => {
+      (entries) =>
         entries.forEach((en) => {
           const el = en.target as HTMLElement;
           if (en.isIntersecting) el.classList.add("in");
           else el.classList.remove("in");
-        });
-      },
+        }),
       { threshold: 0.25, rootMargin: "0px 0px -12% 0px" }
     );
     revealEls.forEach((el) => io.observe(el));
 
-    // --- Parallax suave ---
     const parEls = Array.from(root.querySelectorAll<HTMLElement>("[data-parallax]"));
     const videoEl = root.querySelector<HTMLElement>(".xp-bg-video");
     const tintEl  = root.querySelector<HTMLElement>(".xp-bg-tint");
@@ -126,7 +118,6 @@ export default function Countdown({
 
   return (
     <section className="xp-count-section" ref={sectionRef}>
-      {/* ===== VIDEO DE FONDO + FILTRO VERDE ===== */}
       <div className="xp-bg-wrap" aria-hidden>
         <video
           className="xp-bg-video"
@@ -143,12 +134,10 @@ export default function Countdown({
       </div>
 
       <div className="xp-count-wrap" data-anim="fade-up">
-        {/* Texto breve */}
         <p className="xp-invite" data-anim="fade-up" style={{ ["--d" as any]: "0ms" }} data-parallax="16">
           Te invitamos a una sesión clave: ciencia aplicada, resultados reales.
         </p>
 
-        {/* Logo centrado */}
         <div className="brand" data-anim="scale-fade" style={{ ["--d" as any]: "80ms" }} data-parallax="22">
           <img
             className="brand-logo"
@@ -160,7 +149,6 @@ export default function Countdown({
           />
         </div>
 
-        {/* ===== CONTADOR MINIMAL ===== */}
         <div className="timer-outer" ref={outerRef}>
           <div className="timer-scale" style={{ transform: `scale(${scale})` }}>
             <div
@@ -200,7 +188,6 @@ export default function Countdown({
           </div>
         </div>
 
-        {/* ===== FECHA · HORA · LUGAR (centrado) ===== */}
         <div className="xp-meta3" data-anim="fade-up" style={{ ["--d" as any]: "260ms" }} data-parallax="-8">
           <span className="ml" aria-hidden />
           <span className="m-item">
@@ -224,7 +211,6 @@ export default function Countdown({
           <span className="ml" aria-hidden />
         </div>
 
-        {/* ===== CTA ===== */}
         <div className="xp-cta-row" data-anim="fade-up" style={{ ["--d" as any]: "360ms" }} data-parallax="-6">
           <button className="btn-minimal" onClick={handleAddToCalendar}>
             Agendar evento

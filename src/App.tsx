@@ -1,27 +1,22 @@
-import { useState } from 'react';
-import Hero from './components/Hero';
-import Countdown from './components/Countdown';
-//import Location from './components/Location';
-
-import './App.css';
-import Inicio from './components/Inicio';
+import { useState } from "react";
+import Hero from "./components/Hero";
+import Countdown from "./components/Countdown";
+import "./App.css";
+import Inicio from "./components/Inicio";
 
 export default function App() {
-  const [stage, setStage] = useState<'hero' | 'welcome'>('hero');
+  const [stage, setStage] = useState<"hero" | "welcome">("hero");
 
-  const handleEnter = () => {
-    setStage('welcome');
-  };
+  const handleEnter = () => setStage("welcome");
 
   return (
     <>
-      {stage === 'hero' ? (
-      <Hero onEnter={handleEnter} />
-      ) : ( 
+      {stage === "hero" ? (
+        <Hero onEnter={handleEnter} />
+      ) : (
         <>
-          <Inicio/>
-          {/* <Location /> */}
-          <Countdown targetDate="2025-10-02T08:00:00" />
+          <Inicio />
+          <Countdown targetDate="2025-10-24T19:00:00-04:00" />
         </>
       )}
     </>
