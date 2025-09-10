@@ -1,122 +1,95 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import "./Location.css";
 
 const ReceptionLocation: React.FC = () => {
-  // ===== Animaciones on-scroll existentes =====
-  useEffect(() => {
-    const scope = document.querySelector(".agenda-section");
-    if (!scope) return;
+  const sectionRef = useRef<HTMLElement | null>(null);
 
-    const targets = scope.querySelectorAll<HTMLElement>("[data-anim]");
+  useEffect(() => {
+    const host = sectionRef.current;
+    if (!host) return;
+
+    // ==== IntersectionObserver: reveals ====
+    const toReveal = host.querySelectorAll<HTMLElement>(".reveal");
     const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) e.target.classList.add("in");
-          else e.target.classList.remove("in");
-        });
-      },
-      { threshold: 0.2, rootMargin: "0px 0px -10% 0px" }
+      (entries) => entries.forEach(e => { if (e.isIntersecting) (e.target as HTMLElement).classList.add("in"); }),
+      { threshold: 0.15 }
     );
+    toReveal.forEach(el => io.observe(el));
 
-    targets.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
+    // ==== Parallax: video, tint y elementos con data-parallax ====
+    const parallaxEls = host.querySelectorAll<HTMLElement>("[data-parallax]");
+    const videoEl = host.querySelector<HTMLElement>(".bg-video");
+    const tintEl  = host.querySelector<HTMLElement>(".bg-tint");
 
-  // helper para delay por elemento
-  const d = (ms: number) => ({ ["--d" as any]: `${ms}ms` });
-
-  // ===== Flecha de "scroll" SOLO móvil =====
-  const [showHint, setShowHint] = useState(false);
-
-  // Mostrar solo en móviles (según el mismo breakpoint de tu CSS: 600px)
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 600px)");
-    const update = () => setShowHint(mq.matches); // visible al cargar si es móvil
-    update();
-    const onChange = (e: MediaQueryListEvent) => setShowHint(e.matches);
-    mq.addEventListener?.("change", onChange);
-    return () => mq.removeEventListener?.("change", onChange);
-  }, []);
-
-  // Ocultar al primer scroll/gesto
-  useEffect(() => {
-    if (!showHint) return;
-    const hide = () => setShowHint(false);
-    window.addEventListener("scroll", hide, { passive: true, once: true });
-    window.addEventListener("touchmove", hide, { passive: true, once: true });
-    window.addEventListener("wheel", hide, { passive: true, once: true });
-    return () => {
-      window.removeEventListener("scroll", hide);
-      window.removeEventListener("touchmove", hide);
-      window.removeEventListener("wheel", hide);
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const rect = host.getBoundingClientRect();
+        const top = rect.top; // negativo al hacer scroll
+        parallaxEls.forEach((el) => {
+          const sp = parseFloat(el.dataset.parallax || "0");
+          el.style.transform = `translate3d(0, ${top * sp}px, 0)`;
+        });
+        if (videoEl) videoEl.style.transform = `translate3d(0, ${top * 0.06}px, 0) scale(1.02)`;
+        if (tintEl)  tintEl.style.opacity   = String(Math.min(0.95, 0.80 + Math.abs(top)/2000));
+      });
     };
-  }, [showHint]);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      io.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
 
   return (
-    <section className="agenda-section">
-      <div className="agenda-wrap">
-        <p className="agenda-intro" data-anim="fade-up" style={d(40)}>
-          Te invitamos a ser parte de una nueva
-          edición de Experience AgroPartners.
+    <section ref={sectionRef} className="invite-section invite--video">
+      {/* VIDEO DE FONDO */}
+      <div className="bg-wrap" aria-hidden>
+        <video
+          className="bg-video"
+          src="/bg2.mp4"
+          autoPlay muted loop playsInline preload="auto"
+          poster="/media/bg2.png"
+        />
+        <div className="bg-tint" />
+        <div className="bg-vignette" />
+      </div>
+
+      {/* CONTENIDO */}
+      <div className="invite-wrap" data-parallax="0.04">
+        {/* Sello de fecha (elegante) */}
+        <div className="date-seal reveal scale d0" data-parallax="0.08" aria-label="Fecha">
+          <span className="dow">VIE</span>
+          <span className="day">24</span>
+          <span className="mon">OCT</span>
+        </div>
+
+        <h2 className="invite-title reveal up d1" data-parallax="0.10">
+          Fisiología de Plantas
+        </h2>
+
+        <p className="invite-lead reveal up d2" data-parallax="0.12">
+          Prof. Geraldo Chavarría · Brasil
         </p>
 
-        {/* Flecha indicativa SOLO móvil (debajo del texto) */}
-        {showHint && (
-          <img
-            className="scroll-hint"
-            src="/logos/flecha.png"
-            alt="Desliza hacia abajo"
-            aria-hidden="true"
-          />
-        )}
+        {/* Línea tipográfica con hora y lugar */}
+        <p className="info-line reveal fade d3" data-parallax="0.14">
+          <span className="line" aria-hidden />
+          <span className="info">19:00 · Hotel Los Tajibos — Santa Cruz de la Sierra</span>
+          <span className="line" aria-hidden />
+        </p>
 
-        <ul className="agenda-list">
-          <li data-anim="fade-up" style={d(80)}>
-            <span className="agenda-dot" />
-            <span className="time">08:00</span>
-            <span className="desc">Desayuno</span>
-          </li>
-          <li data-anim="fade-up" style={d(160)}>
-            <span className="agenda-dot" />
-            <span className="time">09:00</span>
-            <span className="desc">Visita estaciones</span>
-          </li>
-          <li data-anim="fade-up" style={d(240)}>
-            <span className="agenda-dot" />
-            <span className="time">12:00</span>
-            <span className="desc">Almuerzo</span>
-          </li>
-          <li data-anim="fade-up" style={d(320)}>
-            <span className="agenda-dot" />
-            <span className="time">13:30</span>
-            <span className="desc">Charla técnica</span>
-          </li>
-        </ul>
-
-        <h3 className="stations-title" data-anim="fade-up" style={d(80)}>
-          Además visite las estaciones de:
-        </h3>
-
-        <div className="stations-logos">
-          <img data-anim="scale-fade" style={d(0)}   src="/logos/PartnersLab.png"    alt="PartnersLab" />
-          <img data-anim="scale-fade" style={d(100)} src="/logos/BuenasPracticas.png" alt="Buenas Prácticas Agrícolas" />
-          <img data-anim="scale-fade" style={d(200)} src="/logos/HagamosNegocios.png" alt="Hagamos Negocios" />
-          <img data-anim="scale-fade" style={d(300)} src="/logos/Calidad.png"         alt="Control de Calidad" />
-        </div>
-
-        <div className="qr-box">
-          <a
-            href="https://bio.link/agropartners"
-            className="qr-btn"
-            aria-label="Abrir enlace de AgroPartners"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ display: "inline-block", textDecoration: "none", cursor: "pointer" }}
-          >
-            <img data-anim="pop" style={d(60)} src="/logos/Qr.png" alt="Código QR — abrir enlace" />
-          </a>
-          <span data-anim="fade-up" style={d(180)}>Conoce más</span>
-        </div>
+        {/* Copy corto e invitante */}
+        <p className="invite-text reveal up d4" data-parallax="0.16">
+          Te esperamos: ciencia aplicada que rinde en campo.
+        </p>
       </div>
     </section>
   );

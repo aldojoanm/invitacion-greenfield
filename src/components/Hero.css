@@ -1,81 +1,139 @@
+/* Hero.css */
+@font-face{
+  font-family:"FuturaStd";
+  src:url("/fonts/FuturaStdLight.otf") format("opentype");
+  font-weight:300; font-style:normal; font-display:swap;
+}
+
 :root{
-  --accent:#008655;      /* verde marca */
-  --text:#ffffff;
+  --tint-a: rgba(37, 82, 24, .94);
+  --tint-b: rgba(24, 56, 18, .88);
+  --tint-c: rgba(16, 36, 14, .84);
 
-  /* Encadre del video (ajustables) */
-  --video-x-desktop: 50%; /* >50% mueve a la derecha */
+  --video-x-desktop: 50%;
   --video-y-desktop: 50%;
-  --video-x-mobile: 41%;
-  --video-y-mobile: 60%;  /* <50% sube el encuadre */
+  --video-x-mobile: 50%;
+  --video-y-mobile: 50%;
+
+  --hero-h-desktop: 64svh;
+  --hero-h-mobile: 100svh;
+
+  --enter-ms: 700ms;
+  --exit-ms: 900ms;
 }
 
-/* Lienzo fullscreen */
+.sr-only{
+  position:absolute!important; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
 .hero{
-  position:relative;
-  height:100svh;          /* quita el micro-scroll en móvil */
-  min-height:100vh;
-  background:#000;
-  overflow:hidden;
-  isolation:isolate;
-  padding:0;
-  display:block;          /* el botón va absoluto */
+  position: relative;
+  height: var(--hero-h-desktop);
+  min-height: 480px;
+  background: #000;
+  overflow: hidden;
+  isolation: isolate;
+  cursor: pointer;
 }
 
-/* Video de fondo bien centrado y sin filtro */
 .hero-video-bg{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   object-position: var(--video-x-desktop) var(--video-y-desktop);
-  z-index:0;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(1.04);
+}
+
+.hero-filter{
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg, var(--tint-a) 0%, var(--tint-b) 45%, var(--tint-c) 100%);
+  mix-blend-mode: multiply;
+  opacity: .85;
+  pointer-events: none;
+  transition: opacity var(--exit-ms) cubic-bezier(.2,.8,.2,1);
+}
+
+.hero-vignette{
+  position:absolute; inset:0;
+  background: radial-gradient(120% 90% at 70% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.18) 60%, rgba(0,0,0,.36) 100%);
   pointer-events:none;
-  opacity:1;
 }
 
-/* Botón centrado y más abajo */
-.hero-btn{
-  position:absolute;
-  left:50%;
-  transform:translateX(-50%);
-  bottom:clamp(24px, 6vh, 64px);                 /* más abajo en pc */
-  z-index:1;
-
-  background:linear-gradient(180deg,#00a06a 0%,#008655 65%,#046a48 100%);
-  color:var(--text);
-  border:none;
-  padding:14px 32px;
-  border-radius:999px;
-  min-width:220px;
-  cursor:pointer;
-  font:700 16px/1 Inter, "SF Pro Text", "Segoe UI", Roboto,
-       "Helvetica Neue", Arial, "Noto Sans", system-ui, sans-serif;
-  letter-spacing:.3px;
-  box-shadow:0 10px 28px rgba(0,134,85,.24);
-  transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+.hero-fade{
+  position:absolute; inset:0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--exit-ms) cubic-bezier(.2,.8,.2,1);
 }
-.hero-btn:hover{ transform:translateX(-50%) translateY(-1px); box-shadow:0 12px 34px rgba(0,134,85,.30); }
-.hero-btn:active{ transform:translateX(-50%) translateY(0);    box-shadow:0 8px 20px rgba(0,134,85,.22); }
 
-/* ====== Responsive ====== */
+.hero-hint{
+  position: absolute;
+  left: 50%;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  font-family: "FuturaStd", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-weight: 300;
+  font-size: clamp(10px, 2.6vw, 12px);
+  letter-spacing: .22em;
+  color: rgba(255,255,255,.32);
+  text-transform: uppercase;
+  user-select: none;
+  pointer-events: none;
+}
+
+.hero.is-ready .hero-video-bg{
+  animation: heroIntro var(--enter-ms) ease both;
+}
+@keyframes heroIntro{
+  0%   { opacity: 0; transform: scale(1.06); filter: blur(2px) saturate(115%); }
+  100% { opacity: 1; transform: scale(1.00); filter: none; }
+}
+
+.hero.is-exiting .hero-video-bg{
+  animation: heroOutro var(--exit-ms) cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes heroOutro{
+  0%   { opacity: 1; transform: scale(1.00); filter: none; }
+  100% { opacity: 0; transform: scale(1.08); filter: blur(6px) saturate(120%); }
+}
+
+.hero.is-exiting .hero-filter{ opacity: 1; }
+.hero.is-exiting .hero-fade{ opacity: 1; }
+
 @media (max-width: 768px){
   .hero{
-    height:100svh;
-    min-height:100svh;
+    height: var(--hero-h-mobile);
+    min-height: 100svh;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   .hero-video-bg{
-    object-position: var(--video-x-mobile) var(--video-y-mobile); /* un poco más arriba */
-  }
-  .hero-btn{
-    bottom:calc(24px + env(safe-area-inset-bottom)); /* salva-notch */
-    min-width:68vw;
-    padding:13px 28px;
-    font-size:15px;
+    object-position: var(--video-x-mobile) var(--video-y-mobile);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 
-/* Opcional: en ultra-panorámico mueve un pelín más a la derecha */
 @media (min-aspect-ratio: 16/9){
   .hero-video-bg{ object-position: 56% var(--video-y-desktop); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .hero-video-bg,
+  .hero-filter,
+  .hero-fade{
+    animation: none !important;
+    transition: none !important;
+  }
+  .hero-video-bg{
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
 }
