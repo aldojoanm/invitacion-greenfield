@@ -194,11 +194,12 @@ html, body { margin:0; padding:0; max-width:100%; overflow-x:hidden; }
 
 @media (max-width: 860px){
   .xp-count-section{
-    min-height: 75svh;
+    min-height: 82svh;
     padding-top: clamp(22px, 12vh, 70px);
     padding-bottom: clamp(18px, 10vh, 42px);
   }
   .timer{ gap: clamp(10px, 5vw, 16px); }
+  .timer-scale{margin-left: -0.4rem; }
   .t-block{ min-width: 60px; }
   .t-num{ font-size: clamp(24px, 6vw, 36px); }
   .t-colon{ font-size: clamp(20px, 5vw, 28px); }
