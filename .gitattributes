@@ -1,0 +1,8 @@
+index.html text eol=lf
+*.css      text eol=lf
+*.js       text eol=lf
+*.tsx      text eol=lf
+*.ts       text eol=lf
+*.otf      binary
+*.png      binary
+*.mp4      binary
