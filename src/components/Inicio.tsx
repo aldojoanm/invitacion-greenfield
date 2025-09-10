@@ -4,7 +4,7 @@ import "./Inicio.css";
 type Props = { rsvpUrl?: string };
 
 export default function EventInvite({
-  rsvpUrl = "https://www.dropbox.com/",
+  rsvpUrl = "https://www.jotform.com/build/240398360211652",
 }: Props) {
   const rootRef = useRef<HTMLElement | null>(null);
 
