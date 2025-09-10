@@ -126,7 +126,6 @@
   box-shadow:0 0 0 2px rgba(154,165,167,.25);
 }
 
-/* Reveal base + variantes */
 [data-reveal]{
   --d:0ms;
   opacity:0;
@@ -178,17 +177,15 @@
     transform 780ms cubic-bezier(.22,.61,.36,1) var(--d);
 }
 
-/* Parallax genérico para cualquier [data-parallax] */
 [data-parallax]{ transform:translateY(var(--py,0)); will-change:transform; }
 
-/* Botón flotante */
 .btn-rsvp{
   position:relative;
   display:inline-grid;
   place-items:center;
   height:54px;
   padding:0 clamp(24px,6vw,44px);
-  border-radius:999px;
+  border-radius:18px;
   color:#fff;
   text-decoration:none;
   font:800 15px/1 FuturaStd,system-ui,sans-serif;
