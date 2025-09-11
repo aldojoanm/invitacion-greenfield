@@ -14,8 +14,8 @@ export default function Hero({ onEnter }: HeroProps) {
 
     const onCanPlay = () => {
       try {
-        v.defaultPlaybackRate = 3;
-        v.playbackRate = 3;
+        v.defaultPlaybackRate = 1.5;
+        v.playbackRate = 1.5;
       } catch {}
       setReady(true);
     };
