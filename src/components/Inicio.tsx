@@ -64,32 +64,34 @@ export default function EventInvite({
           style={{ ["--d" as any]: "0ms" }}
           aria-hidden="true"
         />
+        <div className="invite-hero__fade" aria-hidden="true" />
 
         <div className="invite-hero__wrap">
           <div className="invite-hero__copy">
-            <div className="title-group">
+
+            {/* LOGO FUERA DEL CONTENEDOR DEL TÍTULO */}
+            <div className="logo-stack" data-parallax data-speed="0.06" data-reveal="logo" style={{ ["--d" as any]: "160ms" }}>
               <img
-                className="brand-mark"
+                className="brand-mark brand-mark--float"
                 src="/logos/logo-greenfield-blanco.png"
                 alt="Greenfield"
-                width={140}
-                height={140}
-                data-parallax
-                data-speed="0.06"
-                data-reveal="logo"
-                style={{ ["--d" as any]: "220ms" }}
+                width={110}
+                height={110}
               />
+            </div>
 
+            {/* TÍTULO + DISERTANTE (separados del logo) */}
+            <div className="title-group">
               <h1
                 className="title"
                 data-parallax
                 data-speed="0.045"
                 data-reveal="title"
-                style={{ ["--d" as any]: "420ms" }}
+                style={{ ["--d" as any]: "320ms" }}
               >
-                <span className="title-row title-row--sm">El futuro del campo</span>
-                <span className="title-row title-row--sm">comienza con la</span>
-                <span className="title-row title-row--xl">FISIOLOGÍA</span>
+                <span className="title-row title-row--sm r1">El futuro del campo</span>
+                <span className="title-row title-row--sm r2">comienza con la</span>
+                <span className="title-row title-row--xl r3">FISIOLOGÍA</span>
               </h1>
 
               <p
@@ -97,13 +99,14 @@ export default function EventInvite({
                 data-parallax
                 data-speed="0.03"
                 data-reveal="text"
-                style={{ ["--d" as any]: "620ms" }}
+                style={{ ["--d" as any]: "600ms" }}
               >
                 Disertante: <strong>Prof. Geraldo Chavarría</strong>
                 <span className="dot dot--muted" aria-hidden="true" />
                 <span className="country">Brasil</span>
               </p>
             </div>
+
           </div>
         </div>
       </section>
