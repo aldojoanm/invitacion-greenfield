@@ -12,6 +12,7 @@ export default function EventInvite({
     const root = rootRef.current;
     if (!root) return;
 
+    // Reveal
     const revealEls = Array.from(root.querySelectorAll<HTMLElement>("[data-reveal]"));
     const io = new IntersectionObserver(
       (entries) => {
@@ -30,6 +31,7 @@ export default function EventInvite({
     );
     revealEls.forEach((el) => io.observe(el));
 
+    // Parallax
     const parallaxEls = Array.from(root.querySelectorAll<HTMLElement>("[data-parallax]"));
     let ticking = false;
     const onScroll = () => {
@@ -61,18 +63,25 @@ export default function EventInvite({
           data-parallax
           data-speed="0.12"
           data-reveal="bg"
-          style={{ ["--d" as any]: "0ms" }}
+          style={{ ["--d" as any]: "0ms", backgroundImage: "url(/media/planta.png)" }}
           aria-hidden="true"
         />
-        <div className="invite-hero__fade" aria-hidden="true" />
+        {/* Filtro verde oscuro */}
+        <div className="invite-hero__tint" aria-hidden="true" />
 
         <div className="invite-hero__wrap">
+          {/* IMPORTANT: área relativa para posicionar elementos individualmente en móvil */}
           <div className="invite-hero__copy">
 
-            {/* LOGO FUERA DEL CONTENEDOR DEL TÍTULO */}
-            <div className="logo-stack" data-parallax data-speed="0.06" data-reveal="logo" style={{ ["--d" as any]: "160ms" }}>
+            {/* LOGO GREENFIELD (manejo individual) */}
+            <div
+              className="gf-logo"
+              data-parallax
+              data-speed="0.06"
+              data-reveal="logo"
+              style={{ ["--d" as any]: "160ms" }}
+            >
               <img
-                className="brand-mark brand-mark--float"
                 src="/logos/logo-greenfield-blanco.png"
                 alt="Greenfield"
                 width={110}
@@ -80,37 +89,58 @@ export default function EventInvite({
               />
             </div>
 
-            {/* TÍTULO + DISERTANTE (separados del logo) */}
-            <div className="title-group">
-              <h1
-                className="title"
-                data-parallax
-                data-speed="0.045"
-                data-reveal="title"
-                style={{ ["--d" as any]: "320ms" }}
-              >
-                <span className="title-row title-row--sm r1">El futuro del campo</span>
-                <span className="title-row title-row--sm r2">comienza con la</span>
-                <span className="title-row title-row--xl r3">FISIOLOGÍA</span>
-              </h1>
+            {/* TÍTULO (2 líneas, centrado) */}
+            <h1
+              className="intro-title"
+              data-parallax
+              data-speed="0.045"
+              data-reveal="title"
+              style={{ ["--d" as any]: "320ms" }}
+            >
+              <span>Te invitamos a un</span>
+              <span>encuentro único</span>
+            </h1>
 
-              <p
-                className="lead"
-                data-parallax
-                data-speed="0.03"
-                data-reveal="text"
-                style={{ ["--d" as any]: "600ms" }}
-              >
-                Disertante: <strong>Prof. Geraldo Chavarría</strong>
-                <span className="dot dot--muted" aria-hidden="true" />
-                <span className="country">Brasil</span>
-              </p>
+            {/* CLAIM IZQUIERDA */}
+            <div
+              className="claim-block"
+              data-parallax
+              data-speed="0.04"
+              data-reveal="text"
+              style={{ ["--d" as any]: "480ms" }}
+            >
+              <span><strong>Conectando</strong> la fisiología</span>
+              <span>con la <strong>agricultura del futuro</strong></span>
             </div>
+
+            {/* LOGO AGRONEXT */}
+            <div
+              className="agronext-logo"
+              data-parallax
+              data-speed="0.035"
+              data-reveal="text"
+              style={{ ["--d" as any]: "560ms" }}
+            >
+              <img src="/media/logo-agronext.png" alt="AgroNext" />
+            </div>
+
+            {/* DISERTANTE */}
+            <p
+              className="speaker"
+              data-parallax
+              data-speed="0.03"
+              data-reveal="text"
+              style={{ ["--d" as any]: "600ms" }}
+            >
+              Disertante: <strong>Prof. Geraldo Chavarría</strong>
+              <span className="dot dot--muted" aria-hidden="true" /> <span className="country">Brasil</span>
+            </p>
 
           </div>
         </div>
       </section>
 
+      {/* Botón: NO tocado */}
       <a
         className="btn-rsvp btn-rsvp--floating"
         href={rsvpUrl}

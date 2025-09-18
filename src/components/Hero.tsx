@@ -7,6 +7,7 @@ type HeroProps = { onEnter: () => void };
 export default function Hero({ onEnter }: HeroProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [ready, setReady] = useState(false);
+  const [logoCycle, setLogoCycle] = useState(0); // ← fuerza reinicio de animación del logo
 
   useEffect(() => {
     const v = videoRef.current;
@@ -20,11 +21,22 @@ export default function Hero({ onEnter }: HeroProps) {
       setReady(true);
     };
 
+    const onEnded = () => {
+      // Cada fin de video: re-montamos el logo para reiniciar caída + bounce
+      setLogoCycle((n) => n + 1);
+      // Si por algún motivo el loop no reanuda, aseguramos el play:
+      try { v.play(); } catch {}
+    };
+
     v.addEventListener("canplay", onCanPlay);
+    v.addEventListener("ended", onEnded);
     v.muted = true;
     if (v.readyState >= 3) onCanPlay();
 
-    return () => v.removeEventListener("canplay", onCanPlay);
+    return () => {
+      v.removeEventListener("canplay", onCanPlay);
+      v.removeEventListener("ended", onEnded);
+    };
   }, []);
 
   return (
@@ -38,17 +50,32 @@ export default function Hero({ onEnter }: HeroProps) {
         playsInline
         preload="auto"
       >
-        <source src="/video1.mp4" type="video/mp4" />
-        <source src="/video1.webm" type="video/webm" />
-        <source src="/video1.mov" type="video/quicktime" />
+        <source src="/inicio.mp4" type="video/mp4" />
+        <source src="/inicio.webm" type="video/webm" />
+        <source src="/inicio.mov" type="video/quicktime" />
         Tu navegador no soporta video HTML5.
       </video>
 
-      <div className="hero-filter" aria-hidden="true" />
+      {/* Viñeta (sin filtro verde) */}
       <div className="hero-vignette" aria-hidden="true" />
 
-      <button type="button" className="hero-cta" onClick={onEnter}>
-        Conocimiento
+      {/* LOGO animado y clickeable (igual que el botón Conocimiento) */}
+      <button
+        key={logoCycle}                 // ← remonta para reiniciar animaciones
+        type="button"
+        className="hero-logo"
+        onClick={onEnter}
+        aria-label="Entrar"
+      >
+        <img
+          src="/logos/logo-greenfield-blanco.png"
+          alt="Greenfield"
+          width={220}
+          height={220}
+          decoding="async"
+          loading="eager"
+          draggable={false}
+        />
       </button>
     </section>
   );

@@ -5,27 +5,27 @@
   font-weight:300; font-style:normal; font-display:swap;
 }
 html, body, #root { height: 100%; min-height: 100%; margin: 0; }
-
 @supports (-webkit-touch-callout: none){
   html, body, #root { height: -webkit-fill-available; min-height: -webkit-fill-available; }
 }
 
 :root{
-  --tint-a: rgba(37, 82, 24, .94);
-  --tint-b: rgba(24, 56, 18, .88);
-  --tint-c: rgba(16, 36, 14, .84);
-
   --hero-h-desktop: 100svh;
   --hero-h-mobile: 100svh;
 
-  --video-x-desktop: 50%;
-  --video-y-desktop: 58%;
-  --video-x-mobile: 50%;
-  --video-y-mobile: 50%;
+  /* foco base (video 1080x1920 = 9:16) */
+  --focus-x: 50%;
+  --focus-y: 52%;
 
   --enter-ms: 700ms;
-}
 
+  /* posicion final (altura media) y tamaño del logo */
+  --logo-end-top: 13%;
+  --logo-size: clamp(70px, 16vw, 220px);
+
+  /* cuándo empieza el bounce por primera vez */
+  --logo-pulse-delay: 5s;
+}
 
 .hero{
   position: relative;
@@ -36,33 +36,98 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
   isolation: isolate;
 }
 
+/* ===== VIDEO ===== */
 .hero-video-bg{
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: var(--video-x-desktop) var(--video-y-desktop);
+  object-position: var(--focus-x) var(--focus-y);
   pointer-events: none;
   opacity: 0;
-  transform: scale(1.04);
+  will-change: opacity, filter;
 }
 
-.hero-filter{
-  position: absolute; inset: 0;
-  background: linear-gradient(120deg, var(--tint-a) 0%, var(--tint-b) 45%, var(--tint-c) 100%);
-  mix-blend-mode: multiply;
-  opacity: .85;
-  pointer-events: none;
-}
-
+/* Viñeta sutil */
 .hero-vignette{
   position:absolute; inset:0;
   background: radial-gradient(120% 90% at 70% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.18) 60%, rgba(0,0,0,.36) 100%);
   pointer-events:none;
+  z-index: 1;
 }
 
-/* CTA: verde sutil semitransparente + hover notorio */
+/* ===== LOGO animado ===== */
+.hero-logo{
+  position: absolute;
+  left: 50%;
+  top: var(--logo-end-top);
+  transform: translate(-50%, 0);
+  z-index: 2;
+
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  outline-offset: 4px;
+
+  display: grid;
+  place-items: center;
+  transform-origin: center;
+}
+.hero-logo img{
+  width: var(--logo-size);
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 10px 26px rgba(0,0,0,.35));
+  pointer-events: none; /* el click lo recibe el botón contenedor */
+}
+
+/* entrada y ciclo: sólo cuando el video está listo */
+.hero.is-ready .hero-logo{
+  /* 1) caída desde arriba */
+  animation:
+    heroLogoDrop 900ms cubic-bezier(.22,.61,.36,1) both,
+    /* 2) bounce lento, continuo, ida y vuelta; arranca a los 5s */
+    heroLogoPulseSlow 5s ease-in-out var(--logo-pulse-delay) infinite;
+}
+
+/* Caída desde arriba al punto final */
+@keyframes heroLogoDrop{
+  0% {
+    transform: translate(-50%, -140%) scale(.92);
+    filter: blur(1.2px) saturate(120%);
+    opacity: 0;
+  }
+  40% { opacity: 1; }
+  100% {
+    transform: translate(-50%, 0) scale(1);
+    filter: none;
+    opacity: 1;
+  }
+}
+
+/* Bounce lento y repetitivo (agranda → original → agranda → …) */
+@keyframes heroLogoPulseSlow{
+  0%   { transform: translate(-50%, 0) scale(1); }
+  25%  { transform: translate(-50%, 0) scale(1.3); }
+  50%  { transform: translate(-50%, 0) scale(1); }
+  75%  { transform: translate(-50%, 0) scale(1.3); }
+  100% { transform: translate(-50%, 0) scale(1); }
+}
+
+/* foco accesible en el logo (matching del CTA) */
+.hero-logo:focus-visible{
+  outline: 0;
+  box-shadow:
+    0 0 0 3px rgba(120, 210, 130, .45),
+    0 14px 36px rgba(0,0,0,.36);
+  border-radius: 16px;
+}
+
+/* ===== CTA existente ===== */
 .hero-cta{
   position:absolute;
   left:50%;
@@ -82,36 +147,33 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
   backdrop-filter: blur(6px) saturate(120%);
   -webkit-backdrop-filter: blur(6px) saturate(120%);
   transition: transform .15s ease, background .22s ease, box-shadow .22s ease, border-color .22s ease, filter .22s ease;
+  z-index: 2;
 }
 .hero-cta:hover{
-  background: rgba(22, 90, 28, .72);  
+  background: rgba(22, 90, 28, .72);
   border-color: rgba(120, 210, 130, .62);
-  box-shadow:
-    0 0 0 10px rgba(34, 120, 46, .16),
-    0 20px 46px rgba(0,0,0,.44);
+  box-shadow: 0 0 0 10px rgba(34, 120, 46, .16), 0 20px 46px rgba(0,0,0,.44);
   transform: translateX(-50%) translateY(-1px) scale(1.03);
   filter: saturate(115%);
 }
 .hero-cta:active{ transform: translateX(-50%) scale(0.995); }
 .hero-cta:focus-visible{
   outline: none;
-  box-shadow:
-    0 0 0 3px rgba(120, 210, 130, .45),
-    0 14px 36px rgba(0,0,0,.36);
+  box-shadow: 0 0 0 3px rgba(120, 210, 130, .45), 0 14px 36px rgba(0,0,0,.36);
 }
 
-/* Intro suave del video (sin efecto de salida) */
+/* Intro del video */
 .hero.is-ready .hero-video-bg{
   animation: heroIntro var(--enter-ms) ease both;
 }
 @keyframes heroIntro{
-  0%   { opacity: 0; transform: scale(1.06); filter: blur(2px) saturate(115%); }
-  100% { opacity: 1; transform: scale(1.00); filter: none; }
+  0%   { opacity: 0; filter: blur(2px) saturate(115%); }
+  100% { opacity: 1; filter: none; }
 }
 
+/* ===== Móvil ===== */
 @media (max-width: 768px){
   .hero{
-
     height: 100svh;
     min-height: 100svh;
     padding-bottom: 0;
@@ -122,22 +184,17 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
       min-height: 100dvh;
     }
   }
-
-  .hero-video-bg{
-    object-position: var(--video-x-mobile) var(--video-y-mobile);
-    width: 100%;
-    height: 100%;
-    min-width: 100%;
-    min-height: 100%;
-    object-fit: cover;
-    height: calc(100% + 1px);
-  }
 }
 
-@media (min-aspect-ratio: 16/9){
-  .hero-video-bg{ object-position: 58% var(--video-y-desktop); }
-}
+/* Ajuste por aspect-ratio (tu configuración original) */
+@media (max-aspect-ratio: 9/19.5){ :root{ --focus-y: 44%; } }
+@media (max-aspect-ratio: 9/16){   :root{ --focus-y: 47%; } }
+@media (max-aspect-ratio: 9/21){   :root{ --focus-y: 40%; } }
+@media (max-aspect-ratio: 9/22.5){ :root{ --focus-y: 38%; } }
+@media (min-aspect-ratio: 16/9){   :root{ --focus-y: 58%; } }
 
+/* Accesibilidad – sin animaciones */
 @media (prefers-reduced-motion: reduce){
-  .hero-video-bg{ animation: none !important; opacity: 1 !important; transform: none !important; filter: none !important; }
+  .hero-video-bg{ animation: none !important; opacity: 1 !important; filter: none !important; }
+  .hero-logo{ animation: none !important; transform: translate(-50%, 0) scale(1) !important; }
 }
