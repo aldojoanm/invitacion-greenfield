@@ -122,11 +122,11 @@
 
 .scroll-hint{
   position: fixed;
-  right: calc(14px + env(safe-area-inset-right, 0px));
-  bottom: calc(25px + env(safe-area-inset-bottom, 0px));
+  right: calc(35px + env(safe-area-inset-right, 0px));
+  bottom: calc(80px + env(safe-area-inset-bottom, 0px)); 
   width: clamp(8px, 3vw, 16px);       /* ajusta si la ves grande/pequeña */
   height: auto;
-  opacity: .16;        /* baja opacidad */
+  opacity: .32;        /* baja opacidad */
   pointer-events: none;
   z-index: 50;
   animation: scrollBlink 1.4s ease-in-out infinite;
@@ -135,8 +135,8 @@
 }
 
 @keyframes scrollBlink{
-  0%, 100% { opacity: .10; transform: translateY(0); }
-  50%      { opacity: .3; transform: translateY(-2px); }
+  0%, 100% { opacity: .35; transform: translateY(0); }  /* ↑ mínimos más visibles */
+  50%      { opacity: .8; transform: translateY(-1px); }/* ↑ pico más visible y suave */
 }
 
 /* Se oculta al primer scroll */
