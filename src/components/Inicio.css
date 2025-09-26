@@ -120,6 +120,31 @@
     0 14px 36px rgba(0,0,0,.36);
 }
 
+.scroll-hint{
+  position: fixed;
+  right: calc(14px + env(safe-area-inset-right, 0px));
+  bottom: calc(25px + env(safe-area-inset-bottom, 0px));
+  width: clamp(8px, 3vw, 16px);       /* ajusta si la ves grande/pequeña */
+  height: auto;
+  opacity: .16;        /* baja opacidad */
+  pointer-events: none;
+  z-index: 50;
+  animation: scrollBlink 1.4s ease-in-out infinite;
+  transform: translateZ(0);
+  will-change: opacity, transform;
+}
+
+@keyframes scrollBlink{
+  0%, 100% { opacity: .10; transform: translateY(0); }
+  50%      { opacity: .3; transform: translateY(-2px); }
+}
+
+/* Se oculta al primer scroll */
+.scroll-hint.is-hidden{
+  opacity: 0;
+  animation: none;
+  transition: opacity .28s ease;
+}
 /* ===== Desktop layout limpio (no afecta móvil) ===== */
 @media (min-width: 1024px){
   .invite-hero__wrap{
@@ -212,7 +237,9 @@
     padding-bottom: clamp(12px, 6vh, 40px);
   }
 }
-
+@media (min-width: 641px){
+  .scroll-hint{ display: none; }
+}
 /* ---------------- INDIVIDUAL: MOBILE ---------------- */
 @media (max-width:640px){
 

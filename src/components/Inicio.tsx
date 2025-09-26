@@ -7,6 +7,7 @@ export default function EventInvite({
   rsvpUrl = "https://www.jotform.com/build/240398360211652",
 }: Props) {
   const rootRef = useRef<HTMLElement | null>(null);
+  const hintRef = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -49,8 +50,18 @@ export default function EventInvite({
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
 
+    // Ocultar la flecha en el primer scroll
+    const onFirstScroll = () => {
+      if (window.scrollY > 0 || window.pageYOffset > 0) {
+        hintRef.current?.classList.add("is-hidden");
+        window.removeEventListener("scroll", onFirstScroll);
+      }
+    };
+    window.addEventListener("scroll", onFirstScroll, { passive: true });
+
     return () => {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", onFirstScroll);
       io.disconnect();
     };
   }, []);
@@ -137,6 +148,17 @@ export default function EventInvite({
 
           </div>
         </div>
+
+        {/* Flecha de “desliza” solo en móvil */}
+        <img
+          ref={hintRef}
+          className="scroll-hint"
+          src="/logos/flecha.png"
+          alt=""
+          aria-hidden="true"
+          loading="eager"
+          decoding="async"
+        />
       </section>
 
       {/* Botón: NO tocado */}
