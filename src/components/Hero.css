@@ -17,7 +17,13 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
   --focus-x: 50%;
   --focus-y: 52%;
 
-  --enter-ms: 700ms;
+  /* DURACIONES (⬅️ ajusta aquí si quieres aún más lento) */
+  --enter-ms: 1400ms;       /* video fade-in (antes 700ms) */
+  --gf-ms: 1600ms;          /* caída de Greenfield (antes 900ms) */
+  --nx-ms: 1700ms;          /* slide-in de NextFarming (antes 920ms) */
+  --brand-ms: 1400ms;       /* aparición logo esquina (antes 800ms) */
+  --brand-delay: 700ms;     /* retardo logo esquina (antes 500ms) */
+  --btn-breath: 4.8s;       /* respiración botón (antes 3.6s) */
 
   /* GREENFIELD (arriba) */
   --gf-top: 30%;
@@ -74,7 +80,7 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
   filter: drop-shadow(0 10px 26px rgba(0,0,0,.35));
 }
 .hero.is-ready .logo-greenfield{
-  animation: heroLogoDrop 900ms cubic-bezier(.22,.61,.36,1) both;
+  animation: heroLogoDrop var(--gf-ms) cubic-bezier(.22,.61,.36,1) both;
 }
 @keyframes heroLogoDrop{
   0% { transform: translate(-50%, -140%) scale(.92); filter: blur(1.2px) saturate(120%); opacity: 0; }
@@ -99,7 +105,7 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
   filter: drop-shadow(0 12px 28px rgba(0,0,0,.32));
 }
 .hero.is-ready .logo-next{
-  animation: logoSlideIn 920ms cubic-bezier(.22,.61,.36,1) both;
+  animation: logoSlideIn var(--nx-ms) cubic-bezier(.22,.61,.36,1) both;
 }
 @keyframes logoSlideIn{
   0%   { opacity: 0; transform: translate(calc(50% + 60vw), -50%) scale(.96); filter: blur(1px) saturate(112%); }
@@ -120,10 +126,10 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
 .brand-corner{
   position: fixed;
   left: calc(14px + env(safe-area-inset-left, 0px));
-  bottom: calc(64px + env(safe-area-inset-bottom, 0px)); /* ⬆ subido */
-  z-index: 2; /* debajo del botón (z=3) */
+  bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+  z-index: 2;  /* debajo del botón (z=3) */
   opacity: 0; transform: translateY(6px);
-  animation: brandIn 800ms ease 500ms forwards;
+  animation: brandIn var(--brand-ms) ease var(--brand-delay) forwards;
 }
 .brand-corner img{
   width: clamp(96px, 22vw, 170px);
@@ -141,7 +147,7 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
 
   --pulse: 1;
   transform: scale(var(--pulse));
-  animation: btnBreathVar 3.6s ease-in-out infinite;
+  animation: btnBreathVar var(--btn-breath) ease-in-out infinite;
 
   padding: 10px 22px;
   border-radius: 16px;
@@ -184,13 +190,13 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
 /* Respiración del botón */
 @keyframes btnBreathVar{ 0%{--pulse:1;} 50%{--pulse:1.02;} 100%{--pulse:1;} }
 
-/* Móvil: si quieres subir el botón aún más, ajusta el 36vh */
+/* Móvil */
 @media (max-width: 768px){
   .hero{ height: 100svh; min-height: 100svh; }
   @supports (height: 100dvh){
     .hero{ height: 100dvh; min-height: 100dvh; }
   }
-  .btn-rsvp--floating{ bottom: calc(32vh + env(safe-area-inset-bottom, 0px)) !important; }
+  .btn-rsvp--floating{ bottom: calc(29vh + env(safe-area-inset-bottom, 0px)) !important; }
 }
 
 /* Aspect ratios */
