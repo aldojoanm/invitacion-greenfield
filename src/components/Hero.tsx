@@ -7,17 +7,14 @@ type HeroProps = { onEnter: () => void };
 export default function Hero({ onEnter }: HeroProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [ready, setReady] = useState(false);
-  const [cycle, setCycle] = useState(0); // reinicia animaciones si el video cicla
+  const [cycle, setCycle] = useState(0);
 
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
 
     const onCanPlay = () => {
-      try {
-        v.defaultPlaybackRate = 1.5;
-        v.playbackRate = 1.5;
-      } catch {}
+      try { v.defaultPlaybackRate = 1.5; v.playbackRate = 1.5; } catch {}
       setReady(true);
     };
     const onEnded = () => {
@@ -41,11 +38,7 @@ export default function Hero({ onEnter }: HeroProps) {
       <video
         ref={videoRef}
         className="hero-video-bg"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
+        autoPlay muted loop playsInline preload="auto"
       >
         <source src="/Fondo-Nexfarming.mp4" type="video/mp4" />
         <source src="/Fondo-Nexfarming.webm" type="video/webm" />
@@ -53,10 +46,9 @@ export default function Hero({ onEnter }: HeroProps) {
         Tu navegador no soporta video HTML5.
       </video>
 
-      {/* Viñeta */}
       <div className="hero-vignette" aria-hidden="true" />
 
-      {/* GREENFIELD: arriba, con efecto de caída */}
+      {/* GREENFIELD: arriba (caída) */}
       <div key={`gf-${cycle}`} className="logo-greenfield" aria-hidden="true">
         <img
           src="/logos/logo-greenfield-blanco.png"
@@ -69,7 +61,7 @@ export default function Hero({ onEnter }: HeroProps) {
         />
       </div>
 
-      {/* NEXTFARMING: centrado vertical y horizontal, entrada derecha → izquierda */}
+      {/* NEXTFARMING: centrado (slide-in der→izq) */}
       <div key={`nx-${cycle}`} className="logo-next" aria-hidden="true">
         <img
           src="/logos/nextfarming-blanco.png"
@@ -82,7 +74,7 @@ export default function Hero({ onEnter }: HeroProps) {
         />
       </div>
 
-      {/* Logo “Guiados”: esquina inferior izquierda, un poco más arriba */}
+      {/* Logo Guiados: esquina inferior izquierda */}
       <div className="brand-corner" aria-hidden="true">
         <img
           src="/logos/logo-guiados2.png"
@@ -95,10 +87,10 @@ export default function Hero({ onEnter }: HeroProps) {
         />
       </div>
 
-      {/* Botón flotante */}
+      {/* Botón SOLO del Hero */}
       <button
         type="button"
-        className="btn-rsvp btn-rsvp--floating"
+        className="btn-hero"
         onClick={onEnter}
         aria-label="Ir a la siguiente sección"
       >
