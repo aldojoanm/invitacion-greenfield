@@ -120,6 +120,91 @@
     0 14px 36px rgba(0,0,0,.36);
 }
 
+/* ===== Desktop layout limpio (no afecta móvil) ===== */
+@media (min-width: 1024px){
+  .invite-hero__wrap{
+    /* más aire arriba/abajo en desktop */
+    padding: clamp(48px, 9vh, 120px) 0;
+  }
+
+  /* pasamos de posiciones absolutas (móvil) a grid en desktop */
+  .invite-hero__copy{
+    min-height: auto;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr; /* texto/claim a la izquierda, logo grande a la derecha */
+    align-items: center;
+    gap: clamp(24px, 4vw, 64px);
+  }
+
+  /* logo superior: ya no absoluto; tamaño sutil */
+  .gf-logo{
+    position: static;
+    transform: none;
+    margin-bottom: 12px;
+  }
+  .gf-logo img{
+    width: clamp(72px, 6vw, 96px);
+    height: auto;
+    filter: drop-shadow(0 6px 18px rgba(0,0,0,.22));
+  }
+
+  /* título: fluye en la columna izquierda */
+  .intro-title{
+    position: static;
+    transform: none;
+    margin: 0 0 .6rem 0;
+    text-align: left;
+    font-weight: 300;
+  }
+  .intro-title span{
+    font-size: clamp(28px, 3.4vw, 48px);
+    line-height: 1.05;
+  }
+
+  /* claim (ahora es el logo 01.png): fluye debajo del título, mismo bloque */
+  .claim-block{
+    position: static;
+    transform: none;
+    margin: .4rem 0 0 0;
+  }
+  /* ocupar similar ancho que el texto original, pero en desktop */
+  .claim-block .claim-logo{
+    width: min(36vw, 520px);
+    max-width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,.22));
+  }
+
+  /* logo AgroNext (02.png) grande en la columna derecha */
+  .agronext-logo{
+    position: static;
+    transform: none;
+    justify-self: center;
+  }
+  /* override fuerte al “:root{ --agx-w: 10px; }” que te achicaba el logo en desktop */
+  .agronext-logo img{
+    width: min(34vw, 520px) !important;
+    height: auto;
+    max-width: 100%;
+    filter: drop-shadow(0 10px 26px rgba(0,0,0,.26));
+  }
+
+  /* disertante: fluye debajo del claim con buena lectura */
+  .speaker{
+    position: static;
+    transform: none;
+    margin: .6rem 0 0 0;
+    font-size: clamp(16px, 1.6vw, 20px);
+    color: #e9f0ea;
+  }
+
+  /* suaviza el parallax en desktop (menos mareo) */
+  [data-parallax]{
+    transform: translateY(calc(var(--py, 0) * .5));
+  }
+}
+
 /* === LIGERAMENTE MÁS CHICA LA PARTE DE ABAJO DEL HERO EN MÓVIL === */
 @media (max-width: 640px){
   .invite-hero__wrap{

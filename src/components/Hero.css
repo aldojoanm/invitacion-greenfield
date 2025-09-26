@@ -178,6 +178,40 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
     0 14px 36px rgba(0,0,0,.36);
 }
 
+/* ===== Desktop polish (no afecta móvil) ===== */
+@media (min-width: 1024px){
+  :root{
+    /* el logo estaba muy arriba/chico en pantallas grandes */
+    --logo-end-top: 16%;
+    --logo-size: clamp(200px, 20vw, 380px);
+  }
+
+  .hero{
+    height: 92vh;            /* un poco menos que 100vh para que respire */
+    min-height: 720px;       /* altura mínima agradable en monitores */
+  }
+
+  .hero-video-bg{
+    filter: saturate(1.04) contrast(1.02);
+  }
+
+  /* botón un poco más grande y con mejor “peso” visual en desktop */
+  .btn-rsvp--floating{
+    bottom: 40px;
+    padding: 14px 28px;
+    font-size: 15px;
+    border-radius: 18px;
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.06),
+      0 12px 28px rgba(0,0,0,.28);
+  }
+  .btn-rsvp--floating .btn-label{
+    line-height: 1.05;
+    letter-spacing: .07em;
+  }
+}
+
+
 /* Respiración suave controlada por variable (no pisa el hover) */
 @keyframes btnBreathVar{
   0%   { --pulse: 1; }
