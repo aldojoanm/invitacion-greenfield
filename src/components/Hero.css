@@ -19,9 +19,12 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
 
   --enter-ms: 700ms;
 
-  /* posición y tamaño del logo (ahora más grande) */
-  --logo-end-top: 12%;
-  --logo-size: clamp(120px, 22vw, 320px);
+  /* GREENFIELD (arriba) */
+  --gf-top: 30%;
+  --gf-size: clamp(60px, 14vw, 160px);
+
+  /* NEXTFARMING (centro) */
+  --nx-size: clamp(220px, 48vw, 560px);
 }
 
 .hero{
@@ -54,46 +57,54 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
   z-index: 1;
 }
 
-/* ===== LOGO FIJO Y SIN FUNCIÓN DE BOTÓN ===== */
-.hero-logo{
-  position: fixed;          /* fijo a la ventana */
+/* ===== GREENFIELD ARRIBA (caída) ===== */
+.logo-greenfield{
+  position: fixed;
   left: 50%;
-  top: var(--logo-end-top);
+  top: var(--gf-top);
   transform: translate(-50%, 0);
   z-index: 2;
-
-  display: grid;
-  place-items: center;
-  transform-origin: center;
-
-  /* sin interacción de clic */
+  display: grid; place-items: center;
   pointer-events: none;
+  will-change: transform, opacity, filter;
 }
-.hero-logo img{
-  width: var(--logo-size);
+.logo-greenfield img{
+  width: var(--gf-size);
   height: auto;
-  display: block;
   filter: drop-shadow(0 10px 26px rgba(0,0,0,.35));
 }
-
-/* entrada solo cuando el video está listo */
-.hero.is-ready .hero-logo{
+.hero.is-ready .logo-greenfield{
   animation: heroLogoDrop 900ms cubic-bezier(.22,.61,.36,1) both;
 }
-
-/* Caída inicial */
 @keyframes heroLogoDrop{
-  0% {
-    transform: translate(-50%, -140%) scale(.92);
-    filter: blur(1.2px) saturate(120%);
-    opacity: 0;
-  }
+  0% { transform: translate(-50%, -140%) scale(.92); filter: blur(1.2px) saturate(120%); opacity: 0; }
   40% { opacity: 1; }
-  100% {
-    transform: translate(-50%, 0) scale(1);
-    filter: none;
-    opacity: 1;
-  }
+  100% { transform: translate(-50%, 0) scale(1); filter: none; opacity: 1; }
+}
+
+/* ===== NEXTFARMING CENTRADO (slide-in) ===== */
+.logo-next{
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); /* estado final */
+  z-index: 2;
+  display: grid; place-items: center;
+  pointer-events: none;
+  will-change: transform, opacity, filter;
+}
+.logo-next img{
+  width: var(--nx-size);
+  height: auto;
+  filter: drop-shadow(0 12px 28px rgba(0,0,0,.32));
+}
+.hero.is-ready .logo-next{
+  animation: logoSlideIn 920ms cubic-bezier(.22,.61,.36,1) both;
+}
+@keyframes logoSlideIn{
+  0%   { opacity: 0; transform: translate(calc(50% + 60vw), -50%) scale(.96); filter: blur(1px) saturate(112%); }
+  55%  { opacity: 1; }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: none; }
 }
 
 /* Intro del video */
@@ -105,6 +116,22 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
   100% { opacity: 1; filter: none; }
 }
 
+/* ===== Logo esquina inferior izquierda (subido ligeramente) ===== */
+.brand-corner{
+  position: fixed;
+  left: calc(14px + env(safe-area-inset-left, 0px));
+  bottom: calc(64px + env(safe-area-inset-bottom, 0px)); /* ⬆ subido */
+  z-index: 2; /* debajo del botón (z=3) */
+  opacity: 0; transform: translateY(6px);
+  animation: brandIn 800ms ease 500ms forwards;
+}
+.brand-corner img{
+  width: clamp(96px, 22vw, 170px);
+  height: auto;
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,.28));
+}
+@keyframes brandIn{ to { opacity: 1; transform: translateY(0); } }
+
 /* ===== Botón estilo “footer” centrado ===== */
 .btn-rsvp--floating{
   position: fixed;
@@ -112,7 +139,6 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
   bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   translate: -50% 0;
 
-  /* respiración basada en variable (para no chocar con el hover) */
   --pulse: 1;
   transform: scale(var(--pulse));
   animation: btnBreathVar 3.6s ease-in-out infinite;
@@ -145,104 +171,38 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
 
   z-index: 3;
 }
+.btn-rsvp--floating .btn-label{ display:block; line-height: 1.1; }
+.btn-rsvp--floating:hover{ background: rgba(16,60,24,.88); border-color: rgba(96,190,110,.62); box-shadow: 0 0 0 10px rgba(28,96,40,.16), 0 20px 46px rgba(0,0,0,.44); transform: translateY(-1px) scale(calc(var(--pulse) * 1.03)); filter: saturate(115%); }
+.btn-rsvp--floating:active{ transform: scale(calc(var(--pulse) * 0.995)); }
+.btn-rsvp--floating:focus-visible{ outline: none; box-shadow: 0 0 0 3px rgba(96,190,110,.45), 0 14px 36px rgba(0,0,0,.36); }
 
-/* Texto en dos líneas */
-.btn-rsvp--floating .btn-label{
-  display:block;
-  line-height: 1.1;
-}
-
-/* Hover/active conservado — combinamos con la respiración */
-.btn-rsvp--floating:hover,
-.btn-rsvp--floating:focus,
-.btn-rsvp--floating:active{
-  text-decoration: none !important;
-}
-.btn-rsvp--floating:hover{
-  background: rgba(16, 60, 24, .88);
-  border-color: rgba(96, 190, 110, .62);
-  box-shadow:
-    0 0 0 10px rgba(28, 96, 40, .16),
-    0 20px 46px rgba(0,0,0,.44);
-  /* sumamos 1.03 al pulso actual */
-  transform: translateY(-1px) scale(calc(var(--pulse) * 1.03));
-  filter: saturate(115%);
-}
-.btn-rsvp--floating:active{
-  transform: scale(calc(var(--pulse) * 0.995));
-}
-.btn-rsvp--floating:focus-visible{
-  outline: none;
-  box-shadow:
-    0 0 0 3px rgba(96, 190, 110, .45),
-    0 14px 36px rgba(0,0,0,.36);
-}
-
-/* ===== Desktop polish (no afecta móvil) ===== */
+/* Desktop tweaks (no afectan móvil) */
 @media (min-width: 1024px){
-  :root{
-    /* el logo estaba muy arriba/chico en pantallas grandes */
-    --logo-end-top: 16%;
-    --logo-size: clamp(200px, 20vw, 380px);
-  }
-
-  .hero{
-    height: 92vh;            /* un poco menos que 100vh para que respire */
-    min-height: 720px;       /* altura mínima agradable en monitores */
-  }
-
-  .hero-video-bg{
-    filter: saturate(1.04) contrast(1.02);
-  }
-
-  /* botón un poco más grande y con mejor “peso” visual en desktop */
-  .btn-rsvp--floating{
-    bottom: 40px;
-    padding: 14px 28px;
-    font-size: 15px;
-    border-radius: 18px;
-    box-shadow:
-      inset 0 0 0 1px rgba(255,255,255,.06),
-      0 12px 28px rgba(0,0,0,.28);
-  }
-  .btn-rsvp--floating .btn-label{
-    line-height: 1.05;
-    letter-spacing: .07em;
-  }
+  .hero{ height: 92vh; min-height: 720px; }
 }
 
+/* Respiración del botón */
+@keyframes btnBreathVar{ 0%{--pulse:1;} 50%{--pulse:1.02;} 100%{--pulse:1;} }
 
-/* Respiración suave controlada por variable (no pisa el hover) */
-@keyframes btnBreathVar{
-  0%   { --pulse: 1; }
-  50%  { --pulse: 1.02; }
-  100% { --pulse: 1; }
-}
-
-/* ===== Móvil ===== */
+/* Móvil: si quieres subir el botón aún más, ajusta el 36vh */
 @media (max-width: 768px){
-  .hero{
-    height: 100svh;
-    min-height: 100svh;
-  }
+  .hero{ height: 100svh; min-height: 100svh; }
   @supports (height: 100dvh){
-    .hero{
-      height: 100dvh;
-      min-height: 100dvh;
-    }
+    .hero{ height: 100dvh; min-height: 100dvh; }
   }
+  .btn-rsvp--floating{ bottom: calc(32vh + env(safe-area-inset-bottom, 0px)) !important; }
 }
 
-/* Ajuste por aspect-ratio */
+/* Aspect ratios */
 @media (max-aspect-ratio: 9/19.5){ :root{ --focus-y: 44%; } }
 @media (max-aspect-ratio: 9/16){   :root{ --focus-y: 47%; } }
 @media (max-aspect-ratio: 9/21){   :root{ --focus-y: 40%; } }
 @media (max-aspect-ratio: 9/22.5){ :root{ --focus-y: 38%; } }
 @media (min-aspect-ratio: 16/9){   :root{ --focus-y: 58%; } }
 
-/* Accesibilidad – sin animaciones */
+/* Accesibilidad */
 @media (prefers-reduced-motion: reduce){
   .hero-video-bg{ animation: none !important; opacity: 1 !important; filter: none !important; }
-  .hero-logo{ animation: none !important; transform: translate(-50%, 0) scale(1) !important; }
+  .logo-greenfield, .logo-next{ animation: none !important; }
   .btn-rsvp--floating{ animation: none !important; transform: scale(1) !important; }
 }

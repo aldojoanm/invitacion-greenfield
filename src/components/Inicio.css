@@ -11,9 +11,9 @@
 
   --claim-top: 40vh;      --claim-left: 16px;
 
-  --agx-top: 55vh;        --agx-left: 60px;
+  --agx-top: 52vh;        --agx-left: 60px;
 
-  --speaker-top: 70vh;    --speaker-left: 16px;
+  --speaker-top: 65vh;    --speaker-left: 16px;
 
   --agx-w: 50vw;          /* ⇐ AJUSTA aquí el tamaño del logo AgroNext */
   --speaker-fs: clamp(16px, 2.8vw, 20px);

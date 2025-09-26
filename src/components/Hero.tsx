@@ -7,7 +7,7 @@ type HeroProps = { onEnter: () => void };
 export default function Hero({ onEnter }: HeroProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [ready, setReady] = useState(false);
-  const [logoCycle, setLogoCycle] = useState(0); // fuerza reinicio de animación del logo
+  const [cycle, setCycle] = useState(0); // reinicia animaciones si el video cicla
 
   useEffect(() => {
     const v = videoRef.current;
@@ -20,10 +20,8 @@ export default function Hero({ onEnter }: HeroProps) {
       } catch {}
       setReady(true);
     };
-
     const onEnded = () => {
-      // Cada fin de video: re-montamos el logo para reiniciar caída
-      setLogoCycle((n) => n + 1);
+      setCycle(n => n + 1);
       try { v.play(); } catch {}
     };
 
@@ -49,20 +47,20 @@ export default function Hero({ onEnter }: HeroProps) {
         playsInline
         preload="auto"
       >
-        <source src="/inicio.mp4" type="video/mp4" />
-        <source src="/inicio.webm" type="video/webm" />
-        <source src="/inicio.mov" type="video/quicktime" />
+        <source src="/Fondo-Nexfarming.mp4" type="video/mp4" />
+        <source src="/Fondo-Nexfarming.webm" type="video/webm" />
+        <source src="/Fondo-Nexfarming.mov" type="video/quicktime" />
         Tu navegador no soporta video HTML5.
       </video>
 
-      {/* Viñeta (sin filtro verde) */}
+      {/* Viñeta */}
       <div className="hero-vignette" aria-hidden="true" />
 
-      {/* LOGO NEXT FARMING: FIJO, MÁS GRANDE, SIN FUNCIÓN DE BOTÓN */}
-      <div key={logoCycle} className="hero-logo is-fixed" aria-hidden="true">
+      {/* GREENFIELD: arriba, con efecto de caída */}
+      <div key={`gf-${cycle}`} className="logo-greenfield" aria-hidden="true">
         <img
-          src="/logos/LOGO-NEXT-FARMING-BLANCO1.png"
-          alt="Next Farming"
+          src="/logos/logo-greenfield-blanco.png"
+          alt="Greenfield"
           width={320}
           height={320}
           decoding="async"
@@ -71,7 +69,33 @@ export default function Hero({ onEnter }: HeroProps) {
         />
       </div>
 
-      {/* Botón estilo footer centrado: respira y llama a onEnter (igual que antes) */}
+      {/* NEXTFARMING: centrado vertical y horizontal, entrada derecha → izquierda */}
+      <div key={`nx-${cycle}`} className="logo-next" aria-hidden="true">
+        <img
+          src="/logos/nextfarming-blanco.png"
+          alt="Next Farming"
+          width={520}
+          height={520}
+          decoding="async"
+          loading="eager"
+          draggable={false}
+        />
+      </div>
+
+      {/* Logo “Guiados”: esquina inferior izquierda, un poco más arriba */}
+      <div className="brand-corner" aria-hidden="true">
+        <img
+          src="/logos/logo-guiados2.png"
+          alt="Guiados"
+          width={180}
+          height={64}
+          decoding="async"
+          loading="eager"
+          draggable={false}
+        />
+      </div>
+
+      {/* Botón flotante */}
       <button
         type="button"
         className="btn-rsvp btn-rsvp--floating"
