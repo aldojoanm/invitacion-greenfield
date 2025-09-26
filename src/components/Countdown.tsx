@@ -1,4 +1,3 @@
-// Countdown.tsx
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./Countdown.css";
 
@@ -89,7 +88,13 @@ export default function Countdown({
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = 0;
-        const r = root.getBoundingClientRect();
+
+        // ✅ SAFE: evita error si root ya no está o no tiene la API
+        const r = (root && typeof root.getBoundingClientRect === "function")
+          ? root.getBoundingClientRect()
+          : null;
+        if (!r) return;
+
         const vh = window.innerHeight || document.documentElement.clientHeight;
         const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
         parEls.forEach((el) => {
@@ -104,7 +109,12 @@ export default function Countdown({
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
-    return () => { io.disconnect(); window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); };
+    return () => {
+      io.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
@@ -126,7 +136,7 @@ export default function Countdown({
         {/* 1) FECHA + HORA (igual) */}
         <div className="xp-meta" data-anim="fade-up" style={{ ["--d" as any]: "80ms" }} data-parallax="12">
           <span className="m-item">
-            <svg viewBox="0 0 24 24" aria-hidden><path d="M7 2v2M17 2v2M3 9h18M4 6h16a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z"/></svg>
+            <svg viewBox="0 0 24 24" aria-hidden><path d="M7 2v2M17 2v2M3 9h18M4 6h16a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/></svg>
             Vie 24 Oct
           </span>
           <span className="m-dot" aria-hidden />

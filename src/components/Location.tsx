@@ -8,7 +8,6 @@ const ReceptionLocation: React.FC = () => {
     const host = sectionRef.current;
     if (!host) return;
 
-
     const toReveal = host.querySelectorAll<HTMLElement>(".reveal");
     const io = new IntersectionObserver(
       (entries) => entries.forEach(e => { if (e.isIntersecting) (e.target as HTMLElement).classList.add("in"); }),
@@ -25,7 +24,13 @@ const ReceptionLocation: React.FC = () => {
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = 0;
-        const rect = host.getBoundingClientRect();
+
+        // ✅ SAFE: evita error si el host ya no existe o pierde la API
+        const rect = (host && typeof host.getBoundingClientRect === "function")
+          ? host.getBoundingClientRect()
+          : null;
+        if (!rect) return;
+
         const top = rect.top; // negativo al hacer scroll
         parallaxEls.forEach((el) => {
           const sp = parseFloat(el.dataset.parallax || "0");
@@ -49,7 +54,6 @@ const ReceptionLocation: React.FC = () => {
 
   return (
     <section ref={sectionRef} className="invite-section invite--video">
-
       <div className="bg-wrap" aria-hidden>
         <video
           className="bg-video"

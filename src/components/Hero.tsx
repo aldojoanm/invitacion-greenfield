@@ -7,7 +7,7 @@ type HeroProps = { onEnter: () => void };
 export default function Hero({ onEnter }: HeroProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [ready, setReady] = useState(false);
-  const [logoCycle, setLogoCycle] = useState(0); // ← fuerza reinicio de animación del logo
+  const [logoCycle, setLogoCycle] = useState(0); // fuerza reinicio de animación del logo
 
   useEffect(() => {
     const v = videoRef.current;
@@ -22,9 +22,8 @@ export default function Hero({ onEnter }: HeroProps) {
     };
 
     const onEnded = () => {
-      // Cada fin de video: re-montamos el logo para reiniciar caída + bounce
+      // Cada fin de video: re-montamos el logo para reiniciar caída
       setLogoCycle((n) => n + 1);
-      // Si por algún motivo el loop no reanuda, aseguramos el play:
       try { v.play(); } catch {}
     };
 
@@ -59,23 +58,27 @@ export default function Hero({ onEnter }: HeroProps) {
       {/* Viñeta (sin filtro verde) */}
       <div className="hero-vignette" aria-hidden="true" />
 
-      {/* LOGO animado y clickeable (igual que el botón Conocimiento) */}
-      <button
-        key={logoCycle}                 // ← remonta para reiniciar animaciones
-        type="button"
-        className="hero-logo"
-        onClick={onEnter}
-        aria-label="Entrar"
-      >
+      {/* LOGO NEXT FARMING: FIJO, MÁS GRANDE, SIN FUNCIÓN DE BOTÓN */}
+      <div key={logoCycle} className="hero-logo is-fixed" aria-hidden="true">
         <img
-          src="/logos/logo-greenfield-blanco.png"
-          alt="Greenfield"
-          width={220}
-          height={220}
+          src="/logos/LOGO-NEXT-FARMING-BLANCO1.png"
+          alt="Next Farming"
+          width={320}
+          height={320}
           decoding="async"
           loading="eager"
           draggable={false}
         />
+      </div>
+
+      {/* Botón estilo footer centrado: respira y llama a onEnter (igual que antes) */}
+      <button
+        type="button"
+        className="btn-rsvp btn-rsvp--floating"
+        onClick={onEnter}
+        aria-label="Ir a la siguiente sección"
+      >
+        <span className="btn-label">INVITADO ESPECIAL</span>
       </button>
     </section>
   );

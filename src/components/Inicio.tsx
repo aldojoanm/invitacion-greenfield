@@ -109,8 +109,7 @@ export default function EventInvite({
               data-reveal="text"
               style={{ ["--d" as any]: "480ms" }}
             >
-              <span><strong>Conectando</strong> la fisiología</span>
-              <span>con la <strong>agricultura del futuro</strong></span>
+              <img src="/logos/01.png" alt="Conectando la fisiología con la agricultura del futuro" className="claim-logo" />
             </div>
 
             {/* LOGO AGRONEXT */}
@@ -121,7 +120,7 @@ export default function EventInvite({
               data-reveal="text"
               style={{ ["--d" as any]: "560ms" }}
             >
-              <img src="/media/logo-agronext.png" alt="AgroNext" />
+              <img src="/logos/02.png" alt="AgroNext" />
             </div>
 
             {/* DISERTANTE */}

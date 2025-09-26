@@ -11,7 +11,7 @@
 
   --claim-top: 40vh;      --claim-left: 16px;
 
-  --agx-top: 45vh;        --agx-left: 60px;
+  --agx-top: 55vh;        --agx-left: 60px;
 
   --speaker-top: 70vh;    --speaker-left: 16px;
 
@@ -88,7 +88,11 @@
 
   z-index: 9999;
 }
-
+.claim-block .claim-logo{
+  display:block;
+  width: min(60vw, 26ch); /* 26ch ≈ el max-width visual que tenías con texto */
+  height:auto;
+}
 /* Mantener sin subrayado siempre */
 .btn-rsvp--floating:hover,
 .btn-rsvp--floating:focus,
