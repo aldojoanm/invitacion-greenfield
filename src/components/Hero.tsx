@@ -13,6 +13,23 @@ export default function Hero({ onEnter }: HeroProps) {
     const v = videoRef.current;
     if (!v) return;
 
+    // --- FIX autoplay móvil: forzar muted/playsInline + reintentos y fallback por toque ---
+    v.muted = true;
+    v.playsInline = true;
+
+    const tryPlay = () => v.play().catch(() => { /* silencio si el navegador exige gesto */ });
+
+    // intento inmediato
+    tryPlay();
+    // intento cuando haya data cargada
+    const onLoadedData = () => tryPlay();
+    v.addEventListener("loadeddata", onLoadedData);
+
+    // si el navegador exige gesto de usuario, un solo toque en cualquier parte
+    const onFirstTouch = () => { tryPlay(); window.removeEventListener("touchstart", onFirstTouch); };
+    window.addEventListener("touchstart", onFirstTouch, { once: true, passive: true });
+    // -------------------------------------------------------------------------------
+
     const onCanPlay = () => {
       try { v.defaultPlaybackRate = 1.5; v.playbackRate = 1.5; } catch {}
       setReady(true);
@@ -28,6 +45,8 @@ export default function Hero({ onEnter }: HeroProps) {
     if (v.readyState >= 3) onCanPlay();
 
     return () => {
+      v.removeEventListener("loadeddata", onLoadedData);
+      window.removeEventListener("touchstart", onFirstTouch);
       v.removeEventListener("canplay", onCanPlay);
       v.removeEventListener("ended", onEnded);
     };
