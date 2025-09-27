@@ -124,7 +124,7 @@
   position: fixed;
   right: calc(35px + env(safe-area-inset-right, 0px));
   bottom: calc(80px + env(safe-area-inset-bottom, 0px)); 
-  width: clamp(8px, 3vw, 16px);       /* ajusta si la ves grande/pequeña */
+  width: clamp(25px, 20vw, 60px);       /* ajusta si la ves grande/pequeña */
   height: auto;
   opacity: .32;        /* baja opacidad */
   pointer-events: none;
@@ -139,7 +139,6 @@
   50%      { opacity: .8; transform: translateY(-1px); }/* ↑ pico más visible y suave */
 }
 
-/* Se oculta al primer scroll */
 .scroll-hint.is-hidden{
   opacity: 0;
   animation: none;
@@ -152,16 +151,14 @@
     padding: clamp(48px, 9vh, 120px) 0;
   }
 
-  /* pasamos de posiciones absolutas (móvil) a grid en desktop */
   .invite-hero__copy{
     min-height: auto;
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr; /* texto/claim a la izquierda, logo grande a la derecha */
+    grid-template-columns: 1.1fr 0.9fr; 
     align-items: center;
     gap: clamp(24px, 4vw, 64px);
   }
 
-  /* logo superior: ya no absoluto; tamaño sutil */
   .gf-logo{
     position: static;
     transform: none;
@@ -173,7 +170,6 @@
     filter: drop-shadow(0 6px 18px rgba(0,0,0,.22));
   }
 
-  /* título: fluye en la columna izquierda */
   .intro-title{
     position: static;
     transform: none;
@@ -186,13 +182,12 @@
     line-height: 1.05;
   }
 
-  /* claim (ahora es el logo 01.png): fluye debajo del título, mismo bloque */
   .claim-block{
     position: static;
     transform: none;
     margin: .4rem 0 0 0;
   }
-  /* ocupar similar ancho que el texto original, pero en desktop */
+
   .claim-block .claim-logo{
     width: min(36vw, 520px);
     max-width: 100%;
@@ -201,13 +196,12 @@
     filter: drop-shadow(0 8px 20px rgba(0,0,0,.22));
   }
 
-  /* logo AgroNext (02.png) grande en la columna derecha */
   .agronext-logo{
     position: static;
     transform: none;
     justify-self: center;
   }
-  /* override fuerte al “:root{ --agx-w: 10px; }” que te achicaba el logo en desktop */
+
   .agronext-logo img{
     width: min(34vw, 520px) !important;
     height: auto;
@@ -215,7 +209,6 @@
     filter: drop-shadow(0 10px 26px rgba(0,0,0,.26));
   }
 
-  /* disertante: fluye debajo del claim con buena lectura */
   .speaker{
     position: static;
     transform: none;
@@ -224,26 +217,22 @@
     color: #e9f0ea;
   }
 
-  /* suaviza el parallax en desktop (menos mareo) */
   [data-parallax]{
     transform: translateY(calc(var(--py, 0) * .5));
   }
 }
 
-/* === LIGERAMENTE MÁS CHICA LA PARTE DE ABAJO DEL HERO EN MÓVIL === */
 @media (max-width: 640px){
   .invite-hero__wrap{
-    /* era: padding: clamp(28px, 8vh, 72px) 0; → reducimos un poco el bottom */
     padding-bottom: clamp(12px, 6vh, 40px);
   }
 }
 @media (min-width: 641px){
   .scroll-hint{ display: none; }
 }
-/* ---------------- INDIVIDUAL: MOBILE ---------------- */
+
 @media (max-width:640px){
 
-  /* LOGO GREENFIELD (independiente) */
   .gf-logo{
     position:absolute;
     top: calc(env(safe-area-inset-top,0px) + var(--gf-top));
@@ -255,7 +244,6 @@
     filter:drop-shadow(0 6px 18px rgba(0,0,0,.28));
   }
 
-  /* TÍTULO (independiente) */
   .intro-title{
     position:absolute;
     top: var(--title-top);
@@ -267,7 +255,6 @@
   }
   .intro-title span{ display:block; font-size: clamp(20px, 5.6vw, 30px); }
 
-  /* CLAIM (independiente) */
   .claim-block{
     position:absolute;
     top: var(--claim-top);
@@ -281,7 +268,6 @@
   }
   .claim-block strong{ font-weight:800; }
 
-  /* LOGO AGRONEXT (independiente) */
   .agronext-logo{
     position:absolute;
     top: var(--agx-top);
@@ -294,7 +280,6 @@
     height:auto; filter: drop-shadow(0 10px 22px rgba(0,0,0,.28));
   }
 
-  /* DISERTANTE (independiente) */
   .speaker{
     position:absolute;
     top: var(--speaker-top);
@@ -303,8 +288,6 @@
     font-family:FuturaStd, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     font-size: var(--speaker-fs);
     line-height: 1.35; color:#e9f0ea;
-
-    /* en bloque para que “Brasil” baje a la línea siguiente */
     display:block;
   }
   .dot{ display: none; }
@@ -313,7 +296,6 @@
   }
 }
 
-/* Desktop opcional (no cambia tu flujo actual) */
 @media (min-width: 641px){
   :root{ --agx-w: 10px; }
   .gf-logo img{ width: clamp(64px,5.6vw,88px); }
@@ -321,7 +303,6 @@
   .agronext-logo img { width: var(--agx-w); }
 }
 
-/* === tus animaciones existentes siguen funcionando === */
 [data-reveal]{ --d:0ms; opacity:0; filter:blur(2px); transform:translateY(16px) scale(1);
   transition: opacity 680ms cubic-bezier(.2,.8,.2,1) var(--d),
              transform 760ms cubic-bezier(.22,.61,.36,1) var(--d),

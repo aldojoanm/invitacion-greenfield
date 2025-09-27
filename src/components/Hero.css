@@ -24,7 +24,7 @@ html, body, #root { height: 100%; min-height: 100%; margin: 0; }
 
   /* Posiciones/tamaños */
   --gf-top: 30%;
-  --gf-size: clamp(60px, 14vw, 160px);
+  --gf-size: clamp(140px, 20vw, 180px);
   --nx-size: clamp(220px, 48vw, 560px);
 }
 

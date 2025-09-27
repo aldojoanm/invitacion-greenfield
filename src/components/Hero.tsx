@@ -51,7 +51,7 @@ export default function Hero({ onEnter }: HeroProps) {
       {/* GREENFIELD: arriba (caída) */}
       <div key={`gf-${cycle}`} className="logo-greenfield" aria-hidden="true">
         <img
-          src="/logos/logo-greenfield-blanco.png"
+          src="/logos/gf4.png"
           alt="Greenfield"
           width={320}
           height={320}

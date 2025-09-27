@@ -153,7 +153,7 @@ export default function EventInvite({
         <img
           ref={hintRef}
           className="scroll-hint"
-          src="/logos/flecha.png"
+          src="/logos/dedo1.png"
           alt=""
           aria-hidden="true"
           loading="eager"
