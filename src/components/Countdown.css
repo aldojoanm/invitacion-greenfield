@@ -1,4 +1,3 @@
-/* Countdown.css */
 *,
 *::before,
 *::after { box-sizing: border-box; }
@@ -16,36 +15,33 @@ html, body { margin:0; padding:0; max-width:100%; overflow-x:hidden; }
   --hair-soft: rgba(255,255,255,.10);
   --ease: cubic-bezier(.22,.61,.36,1);
   --dur: 720ms;
-
-  /* control de espaciados */
-  --stack-gap: clamp(16px, 6vh, 56px);
+  --stack-gap: clamp(12px, 5vh, 40px);
   --nudge-up: 18px;
-  --pad-bottom: clamp(44px, 16vh, 120px);
-
-  /* ancho del texto introductorio (ya no se usa el intro) */
+  --pad-bottom: clamp(32px, 12vh, 96px);
+  --pad-top-count: clamp(6px, 5vh, 56px);
+  --overlap-top: clamp(40px, 22vh, 160px);
   --intro-w-desktop-ch: 54;
-  --intro-w-mobile-ch:  30;
+  --intro-w-mobile-ch: 30;
 }
 
-/* BG */
 .xp-bg-wrap{ position:absolute; inset:0; z-index:0; overflow:hidden; }
 .xp-bg-video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transform: translateZ(0); filter: saturate(1.06) contrast(1.04); will-change: transform; }
 .xp-bg-tint{ position:absolute; inset:0; background:linear-gradient(120deg, rgba(37,82,24,.94), rgba(24,56,18,.88) 45%, rgba(16,36,14,.84)); mix-blend-mode:multiply; pointer-events:none; transition:opacity .35s ease; }
 .xp-bg-vignette{ position:absolute; inset:0; background:radial-gradient(120% 90% at 70% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.18) 60%, rgba(0,0,0,.36) 100%); pointer-events:none; }
 
-/* SECTION */
 .xp-count-section{
   position:relative;
-  min-height: 70svh;
+  min-height: 78svh;
   color:var(--text);
-  padding-top: 0;
+  padding-top: var(--pad-top-count);
   padding-bottom: var(--pad-bottom);
+  margin-top: calc(-1 * var(--overlap-top));
   padding-left: calc(16px + env(safe-area-inset-left, 0px));
   padding-right: calc(16px + env(safe-area-inset-right, 0px));
-  margin-top: calc(-1 * var(--nudge-up));
   border-top: 0;
   z-index:1;
 }
+
 .xp-count-wrap{
   width:min(1100px, 92vw);
   margin:0 auto;
@@ -57,10 +53,6 @@ html, body { margin:0; padding:0; max-width:100%; overflow-x:hidden; }
   row-gap: var(--stack-gap);
 }
 
-/* INTRO (eliminado) */
-/* .xp-intro {...} */
-
-/* FECHA + HORA */
 .xp-meta{
   width:100%;
   display:flex; align-items:center; justify-content:center; flex-wrap:wrap;
@@ -69,21 +61,19 @@ html, body { margin:0; padding:0; max-width:100%; overflow-x:hidden; }
 }
 .m-item{
   display:inline-flex; align-items:center; justify-content:center; gap:8px;
-  font:600 clamp(12px, 1.8vw, 13px)/1 FuturaStd, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font:600 clamp(12.5px, 2vw, 13.5px)/1 FuturaStd, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   text-transform:uppercase; letter-spacing:.12em; color:#fff; white-space:nowrap;
 }
-.m-item svg{ width:16px; height:16px; stroke:#fff; fill:none; stroke-width:1.7; opacity:.95; }
+.m-item svg{ width:17px; height:17px; stroke:#fff; fill:none; stroke-width:1.7; opacity:.95; }
 .m-dot{ width:5px; height:5px; border-radius:999px; background:rgba(255,255,255,.45); }
 
-/* UBICACIÓN (hero, grande y centrada) */
 .xp-location{ display:flex; justify-content:center; transform: translateY(var(--parY, 0px)); }
 .xp-location--hero .m-item{
-  font:800 clamp(16px, 3.8vw, 26px)/1.2 FuturaStd, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font:800 clamp(17px, 4vw, 27px)/1.2 FuturaStd, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   letter-spacing:.08em;
 }
-.xp-location--hero .m-item svg{ width:18px; height:18px; }
+.xp-location--hero .m-item svg{ width:19px; height:19px; }
 
-/* TIMER */
 .timer-outer{ width:100%; display:grid; place-items:center; }
 .timer-scale{ display:inline-block; transform-origin: top center; }
 .timer{
@@ -100,7 +90,6 @@ html, body { margin:0; padding:0; max-width:100%; overflow-x:hidden; }
 .t-lbl{ margin-top:8px; font:700 10.5px/1 FuturaStd, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; letter-spacing:.22em; color:var(--muted); }
 .t-colon{ font-family:FuturaStd, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-size: clamp(22px, 4.8vw, 34px); line-height:1; color:rgba(255,255,255,.7); transform: translateY(-2px); }
 
-/* CTA */
 .xp-cta-row{ display:flex; justify-content:center; }
 .btn-minimal{
   appearance:none; border:1px solid var(--hair); background:transparent; color:#fff;
@@ -113,11 +102,9 @@ html, body { margin:0; padding:0; max-width:100%; overflow-x:hidden; }
 .btn-minimal:hover{ background: rgba(255,255,255,.06); transform: translateY(-1px); }
 .btn-minimal:active{ transform:none; }
 
-/* Logo */
 .brand{ display:grid; place-items:center; margin:0; transform: translateY(var(--parY, 0px)); }
-.brand-logo{ width: clamp(130px, 22vw, 240px); height:auto; max-width:100%; filter: drop-shadow(0 10px 24px rgba(0,0,0,.28)); }
+.brand-logo{ width: clamp(130px, 22vw, 240px); height:auto; max-width:100%; filter: drop-shadow(0 10px 24px rgba(0,0,0,.28)); margin-top: 10%; }
 
-/* Animaciones */
 [data-anim]{ --d:0ms; opacity:0; transform: translateY(calc(var(--parY,0px) + 14px)) scale(1); filter: blur(2px);
   transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease), filter var(--dur) var(--ease);
   transition-delay: var(--d); will-change: transform, opacity, filter;
@@ -128,24 +115,25 @@ html, body { margin:0; padding:0; max-width:100%; overflow-x:hidden; }
 [data-anim="fade-up"]{ transform: translateY(calc(var(--parY,0px) + 18px)); }
 [data-anim]:not(.in){ transition-duration: 520ms; }
 
-/* Responsive */
 @media (max-width: 860px){
   :root{
-    --stack-gap: clamp(14px, 6vh, 40px);
-    --nudge-up: clamp(52px, 11vh, 140px);
-    --pad-bottom: clamp(52px, 18vh, 140px);
+    --stack-gap: clamp(10px, 4.5vh, 32px);
+    --pad-bottom: clamp(28px, 12vh, 90px);
+    --pad-top-count: clamp(4px, 4.5vh, 44px);
+    --overlap-top: clamp(40px, 9vh, 180px);
   }
-  /* ya no hay xp-intro; nada que cambiar aquí */
   .timer-scale{ margin-left: -0.4rem; }
   .t-block{ min-width: 60px; }
   .t-num{ font-size: clamp(24px, 6vw, 36px); }
   .t-colon{ font-size: clamp(20px, 5vw, 28px); }
-   .xp-location--hero .m-item{font:800 clamp(5px, 3vw, 16px)/1.25 FuturaStd, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  .xp-location--hero .m-item{
+    font:800 clamp(6px, 3.2vw, 17px)/1.25 FuturaStd, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     letter-spacing:.06em;
-    margin-top: 3rem;
-    margin-bottom: -1rem;
+    margin-top: 1.2rem;
+    margin-bottom: -0.6rem;
   }
 }
+
 @media (prefers-reduced-motion: reduce){
   .xp-bg-video{ display:none; }
   .xp-count-section{ background:#0b1410 url("/media/bg2.png") center/cover no-repeat; }

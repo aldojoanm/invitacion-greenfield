@@ -88,13 +88,10 @@ export default function Countdown({
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = 0;
-
-        // ✅ SAFE: evita error si root ya no está o no tiene la API
         const r = (root && typeof root.getBoundingClientRect === "function")
           ? root.getBoundingClientRect()
           : null;
         if (!r) return;
-
         const vh = window.innerHeight || document.documentElement.clientHeight;
         const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
         parEls.forEach((el) => {
@@ -125,7 +122,6 @@ export default function Countdown({
       </div>
 
       <div className="xp-count-wrap">
-        {/* 0) UBICACIÓN (en lugar del título) */}
         <div className="xp-location xp-location--hero" data-anim="fade-up" style={{ ["--d" as any]: "0ms" }} data-parallax="10">
           <a className="m-item link-ghost m-item--hero" href="https://www.google.com/maps/search/?api=1&query=Hotel+Los+Tajibos+Santa+Cruz" target="_blank" rel="noopener noreferrer">
             <svg viewBox="0 0 24 24" aria-hidden><path d="M12 22s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11Z M12 10.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/></svg>
@@ -133,7 +129,6 @@ export default function Countdown({
           </a>
         </div>
 
-        {/* 1) FECHA + HORA (igual) */}
         <div className="xp-meta" data-anim="fade-up" style={{ ["--d" as any]: "80ms" }} data-parallax="12">
           <span className="m-item">
             <svg viewBox="0 0 24 24" aria-hidden><path d="M7 2v2M17 2v2M3 9h18M4 6h16a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/></svg>
@@ -146,7 +141,6 @@ export default function Countdown({
           </span>
         </div>
 
-        {/* 2) CONTADOR (sin segundos) */}
         <div className="timer-outer" ref={outerRef}>
           <div className="timer-scale" style={{ transform: `scale(${scale})` }}>
             <div className="timer" ref={innerRef} role="timer" aria-live="polite" data-anim="fade-up" style={{ ["--d" as any]: "160ms" }}>
@@ -165,13 +159,11 @@ export default function Countdown({
           </div>
         </div>
 
-        {/* 3) CTA (igual) */}
         <div className="xp-cta-row" data-anim="fade-up" style={{ ["--d" as any]: "320ms" }} data-parallax="-6">
           <button className="btn-minimal" onClick={handleAddToCalendar}>Agendar evento</button>
         </div>
 
-        {/* 4) Logo (igual) */}
-        <div className="brand" data-anim="scale-fade" style={{ ["--d" as any]: "400ms" }} data-parallax="16">
+        <div className="brand" data-anim="scale-fade" style={{ ["--d" as any]: "380ms" }} data-parallax="16">
           <img className="brand-logo" src="/logos/logo-guiados.png" alt="Guiados" width={320} height={320} loading="eager" />
         </div>
       </div>

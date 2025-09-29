@@ -93,7 +93,7 @@ export default function EventInvite({
               style={{ ["--d" as any]: "160ms" }}
             >
               <img
-                src="/logos/logo-greenfield-blanco.png"
+                src="/logos/gf4.png"
                 alt="Greenfield"
                 width={110}
                 height={110}
@@ -108,7 +108,7 @@ export default function EventInvite({
               data-reveal="title"
               style={{ ["--d" as any]: "320ms" }}
             >
-              <span>Te invitamos a un</span>
+              <span>Te invitan a un</span>
               <span>encuentro único</span>
             </h1>
 

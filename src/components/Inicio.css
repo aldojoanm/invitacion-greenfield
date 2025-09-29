@@ -4,7 +4,7 @@
   --paper:#f6f7f5;
 
   /* POSICIONES INDIVIDUALES (sólo móvil). Ajusta a gusto */
-  --gf-top: 2rem;         --gf-left: 16px;
+  --gf-top: 6rem;         --gf-left: 16px;
 
   --title-top: 25vh;      /* más chico = más arriba */
   --title-left: 25%;      /* 50% + translateX(-50%) = centrado real */
@@ -15,7 +15,7 @@
 
   --speaker-top: 65vh;    --speaker-left: 16px;
 
-  --agx-w: 50vw;          /* ⇐ AJUSTA aquí el tamaño del logo AgroNext */
+  --agx-w: 50vw;          /* ⇐ AJUSTA aquí el tamaño del logo AgroNext (desktop) */
   --speaker-fs: clamp(16px, 2.8vw, 20px);
 }
 
@@ -135,8 +135,8 @@
 }
 
 @keyframes scrollBlink{
-  0%, 100% { opacity: .35; transform: translateY(0); }  /* ↑ mínimos más visibles */
-  50%      { opacity: .8; transform: translateY(-1px); }/* ↑ pico más visible y suave */
+  0%, 100% { opacity: .35; transform: translateY(0); }
+  50%      { opacity: .8; transform: translateY(-1px); }
 }
 
 .scroll-hint.is-hidden{
@@ -144,10 +144,10 @@
   animation: none;
   transition: opacity .28s ease;
 }
+
 /* ===== Desktop layout limpio (no afecta móvil) ===== */
 @media (min-width: 1024px){
   .invite-hero__wrap{
-    /* más aire arriba/abajo en desktop */
     padding: clamp(48px, 9vh, 120px) 0;
   }
 
@@ -239,7 +239,8 @@
     left: calc(env(safe-area-inset-left,0px) + var(--gf-left));
   }
   .gf-logo img{
-    width: clamp(56px, 13vw, 78px);
+    /* AUMENTADO en móvil */
+    width: clamp(140px, 34vw, 220px);
     height:auto;
     filter:drop-shadow(0 6px 18px rgba(0,0,0,.28));
   }
@@ -276,7 +277,8 @@
     margin:0; width: var(--agx-w);
   }
   .agronext-logo img{
-    width: clamp(150px, 46vw, 260px);
+    /* UN POQUITO MÁS GRANDE en móvil */
+    width: clamp(170px, 52vw, 300px);
     height:auto; filter: drop-shadow(0 10px 22px rgba(0,0,0,.28));
   }
 
@@ -329,3 +331,46 @@
              transform 780ms cubic-bezier(.22,.61,.36,1) var(--d);
 }
 [data-parallax]{ transform:translateY(var(--py,0)); will-change:transform; }
+
+/* === Overrides SOLO móvil: centrado + tamaños === */
+@media (max-width:640px){
+  /* Título exactamente al centro (corrige desplazamiento) */
+  :root{ --title-left: 50%; }
+  .intro-title{
+    left: 50% !important;
+    transform: translate(-50%, var(--py,0)) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+  }
+
+  /* Centrado visual de bloques */
+  .gf-logo{
+    left: 50% !important;
+    transform: translate(-50%, var(--py,0)) !important;
+  }
+  .claim-block{
+    left: 50% !important;
+    transform: translate(-50%, var(--py,0)) !important;
+    text-align: center;
+  }
+  .claim-block .claim-logo{ margin: 0 auto; }
+
+  .agronext-logo{
+    left: 50% !important;
+    transform: translate(-50%, var(--py,0)) !important;
+    width: auto;
+    text-align: center;
+  }
+  .agronext-logo img{
+    margin: 0 auto;
+    display: block;
+  }
+
+  .speaker{
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    text-align: center;
+    width: min(92vw, 560px);
+  }
+}
