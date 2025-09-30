@@ -123,7 +123,7 @@
 .scroll-hint{
   position: fixed;
   right: calc(35px + env(safe-area-inset-right, 0px));
-  bottom: calc(85px + env(safe-area-inset-bottom, 0px)); 
+  bottom: calc(80px + env(safe-area-inset-bottom, 0px)); 
   width: clamp(25px, 20vw, 60px);       /* ajusta si la ves grande/pequeña */
   height: auto;
   opacity: .32;        /* baja opacidad */

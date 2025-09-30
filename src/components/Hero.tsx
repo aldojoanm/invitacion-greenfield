@@ -83,7 +83,7 @@ export default function Hero({ onEnter }: HeroProps) {
       {/* NEXTFARMING: centrado (slide-in der→izq) */}
       <div key={`nx-${cycle}`} className="logo-next" aria-hidden="true">
         <img
-          src="/logos/LOGO-NEXT-FARMING-BLANCO1.png"
+          src="/logos/nextfarming-blanco-r2.png"
           alt="Next Farming"
           width={520}
           height={520}

@@ -1,3 +1,4 @@
+
 import { useEffect, useRef } from "react";
 import "./Inicio.css";
 
@@ -131,7 +132,7 @@ export default function EventInvite({
               data-reveal="text"
               style={{ ["--d" as any]: "560ms" }}
             >
-              <img src="/logos/02.png" alt="AgroNext" />
+              <img src="/logos/next2.png" alt="AgroNext" />
             </div>
 
             {/* DISERTANTE */}
